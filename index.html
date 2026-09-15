@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stap in de cirkel — Organisator</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+<div id="setup-screen" class="screen">
+  <h1>🎯 Stap in de cirkel</h1>
+  <button id="history-btn" class="secondary" type="button">Eerdere sessies bekijken</button>
+
+  <label>
+    Sessienaam
+    <input id="session-name-input" type="text" maxlength="60" placeholder="bv. Studiedag AI-geletterdheid">
+  </label>
+  <label>
+    Woord in het midden
+    <input id="center-word-input" type="text" maxlength="30">
+  </label>
+
+  <h2>Stellingen</h2>
+  <p class="hint">Sleutel niets kwijt: pas gerust tekst en tijdslimiet aan of voeg stellingen toe/verwijder ze.</p>
+  <div id="statements-editor"></div>
+  <div class="row">
+    <button id="add-statement-btn" class="secondary" type="button">+ Stelling toevoegen</button>
+    <button id="reset-statements-btn" class="secondary" type="button">Standaardset terugzetten</button>
+  </div>
+
+  <p id="setup-error" class="error hidden"></p>
+  <button id="create-session-btn">Sessie aanmaken</button>
+</div>
+
+<div id="lobby-screen" class="screen hidden">
+  <h1>Sessiecode: <span id="session-code-display"></span></h1>
+
+  <div class="row wrap links-row">
+    <div class="card link-card">
+      <h3>Deelnemerslink</h3>
+      <div id="join-qr"></div>
+      <p id="join-url-display" class="hint"></p>
+    </div>
+    <div class="card link-card">
+      <h3>Digibord-link</h3>
+      <div id="display-qr"></div>
+      <p id="display-url-display" class="hint"></p>
+      <p class="hint">Open deze link op het digibord/beamer.</p>
+    </div>
+  </div>
+
+  <h2>Deelnemers (<span id="participant-count">0</span>)</h2>
+  <div id="lobby-participants" class="card"></div>
+
+  <button id="start-session-btn">Start sessie →</button>
+</div>
+
+<div id="control-screen" class="screen hidden">
+  <p id="control-progress" class="hint"></p>
+  <h2 id="control-statement-text"></h2>
+  <p>Reactie ontvangen: <strong id="control-response-count"></strong></p>
+  <p>Resterende tijd: <strong id="control-time-left"></strong></p>
+  <div id="control-tally" class="card hidden">
+    <p>Mee eens: <strong id="tally-agree"></strong> — Niet mee eens: <strong id="tally-disagree"></strong></p>
+  </div>
+  <button id="next-statement-btn" disabled>Volgende stelling →</button>
+</div>
+
+<div id="review-screen" class="screen hidden">
+  <h1>📊 Sessie afgerond</h1>
+  <p id="review-session-name" class="hint"></p>
+  <button id="export-csv-btn" class="secondary" type="button">CSV exporteren</button>
+
+  <h2>Deelnemers</h2>
+  <p class="hint">Klik op een deelnemer om de antwoorden te bekijken.</p>
+  <div id="review-participants" class="card"></div>
+
+  <div id="review-detail" class="card hidden"></div>
+
+  <button id="back-to-setup-btn" class="secondary" type="button">← Nieuwe sessie</button>
+</div>
+
+<div id="history-screen" class="screen hidden">
+  <h1>Eerdere sessies</h1>
+  <div id="history-list" class="card"></div>
+  <button id="history-back-btn" class="secondary" type="button">← Terug</button>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/shared.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

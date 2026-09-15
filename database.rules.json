@@ -1,0 +1,22 @@
+{
+  "rules": {
+    "sessions": {
+      ".read": true,
+      "$sessionId": {
+        ".write": true,
+        "participants": {
+          "$participantId": {
+            ".validate": "newData.hasChildren(['name', 'code']) && newData.child('name').isString() && newData.child('code').isString()"
+          }
+        },
+        "responses": {
+          "$statementIndex": {
+            "$participantId": {
+              ".validate": "newData.hasChild('value') && (newData.child('value').val() === 0 || newData.child('value').val() === 1)"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,84 @@
+#setup-screen, #control-screen, #review-screen, #history-screen {
+  max-width: 640px;
+}
+
+#history-btn { margin-bottom: 8px; }
+
+.statement-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.statement-row textarea {
+  flex: 1;
+  min-height: 46px;
+}
+
+.statement-row .duration-input {
+  width: 90px;
+  flex: none;
+}
+
+.statement-row .remove-statement-btn {
+  background: white;
+  color: var(--err);
+  border: 1px solid var(--err);
+  padding: 8px 10px;
+  flex: none;
+}
+
+.links-row { align-items: stretch; }
+
+.link-card {
+  flex: 1;
+  min-width: 220px;
+  text-align: center;
+}
+
+.link-card img, .link-card canvas { margin: 0 auto; }
+
+#lobby-participants, #review-participants, #history-list {
+  min-height: 40px;
+}
+
+.participant-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  margin: 4px;
+  border-radius: 999px;
+  background: var(--accent-light);
+  cursor: default;
+}
+
+.participant-chip.clickable {
+  cursor: pointer;
+  border: 1px solid var(--accent);
+}
+
+.participant-chip.clickable:hover { background: var(--accent); color: white; }
+
+.history-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+}
+
+.history-row:hover { background: var(--accent-light); }
+
+#review-detail table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#review-detail td, #review-detail th {
+  text-align: left;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border);
+}
