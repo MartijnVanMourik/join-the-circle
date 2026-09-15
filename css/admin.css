@@ -39,11 +39,10 @@
   flex: none;
 }
 
-.links-row { align-items: stretch; }
+#open-display-btn { margin-bottom: 16px; }
 
-.link-card {
-  flex: 1;
-  min-width: 220px;
+.join-link-card {
+  max-width: 260px;
   text-align: center;
 }
 

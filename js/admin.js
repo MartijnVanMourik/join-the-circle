@@ -133,10 +133,12 @@ createSessionBtn.addEventListener("click", async () => {
 
 const sessionCodeDisplay = document.getElementById("session-code-display");
 const joinUrlDisplay = document.getElementById("join-url-display");
-const displayUrlDisplay = document.getElementById("display-url-display");
 const participantCountEl = document.getElementById("participant-count");
 const lobbyParticipants = document.getElementById("lobby-participants");
 const startSessionBtn = document.getElementById("start-session-btn");
+const openDisplayBtn = document.getElementById("open-display-btn");
+
+let currentDisplayUrl = null;
 
 function baseUrl() {
   return location.href.replace(/index\.html.*$/, "").replace(/\/$/, "") + "/";
@@ -146,18 +148,19 @@ function showLobby() {
   sessionCodeDisplay.textContent = sessionId;
 
   const joinUrl = `${baseUrl()}join.html?s=${sessionId}`;
-  const displayUrl = `${baseUrl()}display.html?s=${sessionId}&admin=1`;
+  currentDisplayUrl = `${baseUrl()}display.html?s=${sessionId}&admin=1`;
   joinUrlDisplay.textContent = joinUrl;
-  displayUrlDisplay.textContent = displayUrl;
 
   document.getElementById("join-qr").innerHTML = "";
-  document.getElementById("display-qr").innerHTML = "";
   new QRCode(document.getElementById("join-qr"), { text: joinUrl, width: 160, height: 160 });
-  new QRCode(document.getElementById("display-qr"), { text: displayUrl, width: 160, height: 160 });
 
   showScreen(lobbyScreen);
   listenToSession();
 }
+
+openDisplayBtn.addEventListener("click", () => {
+  if (currentDisplayUrl) window.open(currentDisplayUrl, "_blank");
+});
 
 function renderLobbyParticipants() {
   const participants = (sessionData && sessionData.participants) || {};

@@ -36,19 +36,12 @@
 
 <div id="lobby-screen" class="screen hidden">
   <h1>Sessiecode: <span id="session-code-display"></span></h1>
+  <button id="open-display-btn" class="secondary" type="button">🖥️ Open digibord-weergave (nieuw tabblad)</button>
 
-  <div class="row wrap links-row">
-    <div class="card link-card">
-      <h3>Deelnemerslink</h3>
-      <div id="join-qr"></div>
-      <p id="join-url-display" class="hint"></p>
-    </div>
-    <div class="card link-card">
-      <h3>Digibord-link</h3>
-      <div id="display-qr"></div>
-      <p id="display-url-display" class="hint"></p>
-      <p class="hint">Open deze link op het digibord/beamer.</p>
-    </div>
+  <div class="card link-card join-link-card">
+    <h3>Deelnemerslink</h3>
+    <div id="join-qr"></div>
+    <p id="join-url-display" class="hint"></p>
   </div>
 
   <h2>Deelnemers (<span id="participant-count">0</span>)</h2>
