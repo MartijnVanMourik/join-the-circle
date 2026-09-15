@@ -58,7 +58,6 @@ function addStatementRow(text = "", durationSec = 30) {
 }
 
 function loadStatementsIntoEditor(data) {
-  sessionNameInput.value = sessionNameInput.value || "";
   centerWordInput.value = data.centerWord;
   statementsEditor.innerHTML = "";
   data.statements.forEach((s) => addStatementRow(s.text, data.statementDurationSec || 30));

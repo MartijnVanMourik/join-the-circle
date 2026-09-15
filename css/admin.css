@@ -2,6 +2,16 @@
   max-width: 640px;
 }
 
+#statements-editor { margin-bottom: 12px; }
+
+#create-session-btn {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  padding: 14px;
+  font-size: 1.1rem;
+}
+
 #history-btn { margin-bottom: 8px; }
 
 .statement-row {
