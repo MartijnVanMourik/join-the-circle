@@ -144,7 +144,7 @@ function baseUrl() {
   return location.href.replace(/index\.html.*$/, "").replace(/\/$/, "") + "/";
 }
 
-function showLobby() {
+function renderLobbyLinks() {
   sessionCodeDisplay.textContent = sessionId;
 
   const joinUrl = `${baseUrl()}join.html?s=${sessionId}`;
@@ -153,7 +153,10 @@ function showLobby() {
 
   document.getElementById("join-qr").innerHTML = "";
   new QRCode(document.getElementById("join-qr"), { text: joinUrl, width: 160, height: 160 });
+}
 
+function showLobby() {
+  renderLobbyLinks();
   showScreen(lobbyScreen);
   listenToSession();
 }
@@ -346,6 +349,8 @@ function listenToSession() {
     if (!sessionData) return;
 
     if (sessionData.status === "lobby") {
+      if (sessionCodeDisplay.textContent !== sessionId) renderLobbyLinks();
+      showScreen(lobbyScreen);
       renderLobbyParticipants();
     } else if (sessionData.status === "active") {
       showScreen(controlScreen);

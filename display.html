@@ -4,46 +4,49 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Stap in de cirkel — Digibord</title>
-<link rel="stylesheet" href="css/display.css">
+<link rel="stylesheet" href="css/display.css?v=3">
 </head>
 <body>
 
-<div id="arena-wrapper">
-  <div id="arena">
-    <div id="center-circle">
-      <span id="center-word"></span>
-      <span id="session-code-hint"></span>
+<div id="page">
+  <div id="arena-wrapper">
+    <div id="arena">
+      <div id="center-circle">
+        <span id="center-word"></span>
+        <span id="session-code-hint"></span>
+      </div>
+      <div id="participants-layer"></div>
     </div>
-    <div id="participants-layer"></div>
-  </div>
-</div>
-
-<div id="bottom-panel">
-  <div id="panel-lobby">
-    <h2>Sessiecode: <span id="lobby-code"></span></h2>
-    <p>Wachten tot de organisator start... (<span id="lobby-count">0</span> deelnemers)</p>
   </div>
 
-  <div id="panel-statement" class="hidden">
-    <p id="panel-progress"></p>
-    <h2 id="panel-statement-text"></h2>
-    <div class="time-bar"><div id="panel-time-fill" class="time-bar-fill"></div></div>
-    <div id="panel-tally" class="hidden">
-      <span class="tally-agree">✅ Mee eens: <strong id="panel-tally-agree"></strong></span>
-      <span class="tally-disagree">⬜ Niet mee eens: <strong id="panel-tally-disagree"></strong></span>
+  <div id="side-panel">
+    <div id="panel-lobby">
+      <h2>Sessiecode: <span id="lobby-code"></span></h2>
+      <p>Wachten tot de organisator start...</p>
+      <p class="hint"><span id="lobby-count">0</span> deelnemers aangemeld</p>
     </div>
-    <button id="panel-next-btn" class="hidden" disabled>Volgende stelling →</button>
-  </div>
 
-  <div id="panel-finished" class="hidden">
-    <h2>🏁 Bedankt voor het meedoen!</h2>
+    <div id="panel-statement" class="hidden">
+      <p id="panel-progress"></p>
+      <h2 id="panel-statement-text"></h2>
+      <div class="time-bar"><div id="panel-time-fill" class="time-bar-fill"></div></div>
+      <div id="panel-tally" class="hidden">
+        <span class="tally-agree">✅ Mee eens: <strong id="panel-tally-agree"></strong></span>
+        <span class="tally-disagree">⬜ Niet mee eens: <strong id="panel-tally-disagree"></strong></span>
+      </div>
+      <button id="panel-next-btn" class="hidden" disabled>Volgende stelling →</button>
+    </div>
+
+    <div id="panel-finished" class="hidden">
+      <h2>🏁 Bedankt voor het meedoen!</h2>
+    </div>
   </div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
-<script src="js/firebase-config.js"></script>
-<script src="js/shared.js"></script>
-<script src="js/display.js"></script>
+<script src="js/firebase-config.js?v=3"></script>
+<script src="js/shared.js?v=3"></script>
+<script src="js/display.js?v=3"></script>
 </body>
 </html>

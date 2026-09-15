@@ -20,12 +20,16 @@ is bewust geen prioriteit.
   sessie besturen (volgende stelling), en achteraf een overzicht: klik op een deelnemer om
   zijn/haar antwoorden per stelling te zien, plus CSV-export. Ook een "Eerdere sessies"-
   overzicht om oude sessies terug te openen.
-- **`display.html?s=CODE`** — digibord/beamer: bijna volledige cirkel (300°-boog, 60° open
-  onderin) met een middencirkel met het instelbare woord, deelnemers als gekleurde bolletjes
-  met hun docentencode. Onderin de huidige stelling met een aftelbalk (springt naar 0 zodra
-  iedereen heeft geantwoord) en, na sluiten, de tellingen. Open met `&admin=1` erbij om ook
-  de "volgende stelling"-knop rechtstreeks op het digibord te krijgen (handig bij een
-  aanraakscherm, zodat je niet steeds naar je laptop hoeft).
+- **`display.html?s=CODE`** — digibord/beamer: een volledige cirkel (geen open stuk meer nodig)
+  met een middencirkel met het instelbare woord, deelnemers als gekleurde bolletjes met hun
+  docentencode. Rechts een vast zijpaneel met de huidige stelling, een aftelbalk (springt naar
+  0 zodra iedereen heeft geantwoord) en, na sluiten, de tellingen — zo blijft de cirkel zelf zo
+  groot mogelijk in plaats van ruimte te delen met een paneel onderin. Open met `&admin=1`
+  erbij om ook de "volgende stelling"-knop rechtstreeks op het digibord te krijgen (handig bij
+  een aanraakscherm, zodat je niet steeds naar je laptop hoeft). De puntgrootte van de
+  deelnemer-bolletjes schaalt automatisch mee met het aantal deelnemers (kleiner bij grote
+  groepen) zodat ze bij grote groepen niet over elkaar heen gaan vallen — zie "Belasting/schaal"
+  hieronder.
 - **`join.html?s=CODE`** — deelnemer (telefoon/laptop): sessiecode (voorgevuld via de link/QR),
   naam en **eigen bestaande docentencode** invullen (geen automatisch gegenereerde code —
   docenten kennen hun eigen code al), daarna per stelling Mee eens / Niet mee eens met dezelfde
@@ -97,6 +101,11 @@ python3 -m http.server 8123
 en open `http://localhost:8123/`. Er staat ook een `.claude/launch.json` voor wie met
 Claude Code werkt.
 
+**Cache-busting:** alle lokale `<script>`/`<link>`-tags hebben een `?v=N` achter de bestandsnaam.
+Browsers (en GitHub Pages) cachen js/css anders hardnekkig, waardoor een teruggekeerde
+digibord-laptop een oude versie kan blijven tonen na een update. Hoog het nummer op in alle
+drie de HTML-bestanden wanneer je een `.js`- of `.css`-bestand wijzigt.
+
 ## Deployen (GitHub Pages)
 
 Al ingericht: repo [MartijnVanMourik/join-the-circle](https://github.com/MartijnVanMourik/join-the-circle),
@@ -135,8 +144,21 @@ Volledige end-to-end flow getest tegen het echte Firebase-project, zowel lokaal 
 live GitHub Pages-URL: sessie aanmaken → QR/links met correct subpad → deelnemer meldt zich
 aan en verschijnt meteen op het digibord → stelling met aftelbalk → balk springt naar 0
 zodra alle deelnemers hebben geantwoord → tellingen verschijnen pas na sluiten → volgende
-stelling verschuift de bolletjes zichtbaar. Nog niet getest: meerdere gelijktijdige
-deelnemers op één sessie, en het "Eerdere sessies"-overzicht in de praktijk.
+stelling verschuift de bolletjes zichtbaar → overzicht + CSV-export na afloop.
+
+**Belasting/schaal:** apart getest met 60 en 100 gesimuleerde deelnemers (Firebase REST API
++ Playwright), met wisselend mee eens/niet mee eens per stelling. Geen performance-problemen
+(pagina laadt + rendert in ~1,5s inclusief Firebase-verbinding, CSV-export van 60 deelnemers ×
+10 stellingen kost ~80ms). Dit leverde wel een echte layout-bug op — bij een vaste puntgrootte
+overlapten de deelnemer-bolletjes bij zulke aantallen fors — opgelost door de puntgrootte
+automatisch te laten meeschalen met het aantal deelnemers, én door het stelling-paneel naast
+(i.p.v. onder) de cirkel te zetten zodat de cirkel zelf groter kan zijn. Ook een bug gevonden
+en opgelost waarbij het heropenen van een nog actieve lobby-sessie via "Eerdere sessies" niet
+naar het lobby-scherm schakelde.
+
+Nog niet getest: meerdere *gelijktijdige, echte* deelnemers (dit is met gesimuleerde/geïnjecteerde
+data getest, niet met 60 losse browsersessies tegelijk), en het "Eerdere sessies"-overzicht met
+veel sessies in de lijst.
 
 ## Bekende keuzes / beperkingen
 

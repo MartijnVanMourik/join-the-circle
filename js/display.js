@@ -3,8 +3,8 @@ const PALETTE = [
   "#06b6d4", "#3b82f6", "#8b5cf6", "#ec4899",
 ];
 
-const START_ANGLE = 210; // graden, 0 = boven, met de klok mee
-const ARC_SWEEP = 300; // graden zichtbare boog (360 - 60 open ruimte onderin)
+// Deelnemers staan rondom een volledige cirkel (het stelling-paneel staat ernaast,
+// niet meer onderin, dus er hoeft geen stuk boog vrijgehouden te worden).
 
 const params = new URLSearchParams(location.search);
 const sessionId = params.get("s");
@@ -105,6 +105,16 @@ function renderArena() {
   const outerR = size * 0.48;
   const innerR = size * 0.19;
 
+  // Puntgrootte schaalt mee met het aantal deelnemers, zodat de cirkel niet
+  // dichtslibt bij grote groepen: elke stip krijgt hooguit de ruimte die er
+  // (bij de buitenrand, het krapste punt) gemiddeld per deelnemer beschikbaar is.
+  const circumferencePx = outerR * 2 * Math.PI;
+  const idealSpacing = circumferencePx / Math.max(order.length, 1);
+  const dotSize = Math.max(16, Math.min(54, idealSpacing * 0.82));
+  const showFullCode = dotSize >= 30;
+  const showInitial = !showFullCode && dotSize >= 20;
+  const fontSize = Math.max(7, dotSize * (showFullCode ? 0.32 : 0.45));
+
   const seen = new Set();
 
   order.forEach((id, i) => {
@@ -112,8 +122,7 @@ function renderArena() {
     if (!participant) return;
     seen.add(id);
 
-    const angleDeg =
-      order.length <= 1 ? 0 : START_ANGLE + (ARC_SWEEP * i) / (order.length - 1);
+    const angleDeg = (360 * i) / Math.max(order.length, 1);
     const angleRad = (angleDeg * Math.PI) / 180;
 
     const score = computeParticipantVisibleScore(sessionData, id);
@@ -128,10 +137,16 @@ function renderArena() {
       dot = document.createElement("div");
       dot.className = "participant-dot";
       dot.style.background = PALETTE[i % PALETTE.length];
-      dot.textContent = participant.code;
+      dot.title = `${participant.name} (${participant.code})`;
       participantsLayer.appendChild(dot);
       dotElements[id] = dot;
     }
+    dot.textContent = showFullCode ? participant.code : showInitial ? participant.code[0] : "";
+    dot.style.width = `${dotSize}px`;
+    dot.style.height = `${dotSize}px`;
+    dot.style.marginLeft = `${-dotSize / 2}px`;
+    dot.style.marginTop = `${-dotSize / 2}px`;
+    dot.style.fontSize = `${fontSize}px`;
     dot.style.left = `${x}px`;
     dot.style.top = `${y}px`;
   });
