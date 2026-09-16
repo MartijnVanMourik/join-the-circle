@@ -14,6 +14,7 @@ const finishedScreen = document.getElementById("finished-screen");
 const sessionCodeInput = document.getElementById("session-code-input");
 const nameInput = document.getElementById("name-input");
 const codeInput = document.getElementById("code-input");
+const teamSelect = document.getElementById("team-select");
 const joinError = document.getElementById("join-error");
 const joinBtn = document.getElementById("join-btn");
 
@@ -52,10 +53,49 @@ if (prefillCode) sessionCodeInput.value = prefillCode.toUpperCase();
 
 sessionCodeInput.addEventListener("input", () => {
   sessionCodeInput.value = sessionCodeInput.value.toUpperCase();
+  tryLoadTeams();
 });
 codeInput.addEventListener("input", () => {
   codeInput.value = codeInput.value.toUpperCase();
 });
+
+let lastCheckedTeamsCode = null;
+
+function populateTeamSelect(teams) {
+  teamSelect.innerHTML = "";
+  const placeholder = document.createElement("option");
+  placeholder.value = "";
+  placeholder.textContent = "Kies je sectie";
+  placeholder.disabled = true;
+  placeholder.selected = true;
+  teamSelect.appendChild(placeholder);
+
+  teams.forEach((team, idx) => {
+    const opt = document.createElement("option");
+    opt.value = idx;
+    opt.textContent = team.name;
+    teamSelect.appendChild(opt);
+  });
+}
+
+async function tryLoadTeams() {
+  const code = sessionCodeInput.value.trim().toUpperCase();
+  if (code.length < 3 || code === lastCheckedTeamsCode) return;
+  lastCheckedTeamsCode = code;
+
+  try {
+    const snap = await withTimeout(db.ref(`sessions/${code}/teams`).once("value"));
+    const teams = snap.val();
+    if (sessionCodeInput.value.trim().toUpperCase() !== code) return; // code intussen gewijzigd
+    if (teams) {
+      populateTeamSelect(teams);
+    } else {
+      teamSelect.innerHTML = '<option value="" disabled selected>Onbekende sessiecode</option>';
+    }
+  } catch {
+    lastCheckedTeamsCode = null; // opnieuw proberen toestaan
+  }
+}
 
 function loadStoredSession() {
   try {
@@ -103,7 +143,8 @@ async function tryAutoRejoin() {
 }
 
 (async () => {
-  await tryAutoRejoin();
+  const rejoined = await tryAutoRejoin();
+  if (!rejoined && prefillCode) tryLoadTeams();
 })();
 
 joinBtn.addEventListener("click", async () => {
@@ -123,6 +164,11 @@ joinBtn.addEventListener("click", async () => {
   }
   if (!teacherCode) {
     joinError.textContent = "Vul je docentencode in.";
+    joinError.classList.remove("hidden");
+    return;
+  }
+  if (!teamSelect.value) {
+    joinError.textContent = "Kies eerst je sectie/team.";
     joinError.classList.remove("hidden");
     return;
   }
@@ -154,6 +200,8 @@ joinBtn.addEventListener("click", async () => {
       return;
     }
 
+    const teamId = parseInt(teamSelect.value, 10);
+
     sessionId = code;
     sessionRef = db.ref(`sessions/${sessionId}`);
 
@@ -163,6 +211,7 @@ joinBtn.addEventListener("click", async () => {
       newParticipantRef.set({
         name,
         code: teacherCode,
+        teamId,
         joinedAt: firebase.database.ServerValue.TIMESTAMP,
       })
     );

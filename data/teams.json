@@ -1,0 +1,20 @@
+{
+  "teams": [
+    { "name": "(Bedrijfs)economie", "color": "#e0554f" },
+    { "name": "Aardrijkskunde", "color": "#e0793f" },
+    { "name": "Biologie", "color": "#dba23a" },
+    { "name": "Duits", "color": "#b8c43f" },
+    { "name": "Engels", "color": "#7cc94a" },
+    { "name": "Frans", "color": "#4fcf5e" },
+    { "name": "Geschiedenis", "color": "#45cf8a" },
+    { "name": "Klassieke talen", "color": "#3ecfc0" },
+    { "name": "Kunstvakken", "color": "#3ea9d9" },
+    { "name": "Levo", "color": "#4a80e0" },
+    { "name": "Lichamelijke opvoeding en bsm", "color": "#5b5be0" },
+    { "name": "Maatschappijleer/-wetenschappen", "color": "#7c4fe0" },
+    { "name": "Natuurkunde en techniek", "color": "#a34fdb" },
+    { "name": "Oop", "color": "#9a9a9a" },
+    { "name": "Scheikunde", "color": "#d048b0" },
+    { "name": "Wiskunde", "color": "#e04f80" }
+  ]
+}

@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Stap in de cirkel — Organisator</title>
-<link rel="stylesheet" href="css/style.css?v=3">
-<link rel="stylesheet" href="css/admin.css?v=3">
+<link rel="stylesheet" href="css/style.css?v=4">
+<link rel="stylesheet" href="css/admin.css?v=4">
 </head>
 <body>
 
@@ -28,6 +28,14 @@
   <div class="row">
     <button id="add-statement-btn" class="secondary" type="button">+ Stelling toevoegen</button>
     <button id="reset-statements-btn" class="secondary" type="button">Standaardset terugzetten</button>
+  </div>
+
+  <h2>Teams / secties</h2>
+  <p class="hint">Docenten kiezen hun sectie bij aanmelden. Elk team krijgt een eigen kleur op het digibord.</p>
+  <div id="teams-editor"></div>
+  <div class="row">
+    <button id="add-team-btn" class="secondary" type="button">+ Team toevoegen</button>
+    <button id="reset-teams-btn" class="secondary" type="button">Standaard secties terugzetten</button>
   </div>
 
   <p id="setup-error" class="error hidden"></p>
@@ -58,6 +66,13 @@
   <div id="control-tally" class="card hidden">
     <p>Mee eens: <strong id="tally-agree"></strong> — Niet mee eens: <strong id="tally-disagree"></strong></p>
   </div>
+  <label class="switch-row">
+    <span class="switch">
+      <input id="show-codes-toggle" type="checkbox" checked>
+      <span class="switch-slider"></span>
+    </span>
+    Toon codes op digibord
+  </label>
   <button id="next-statement-btn" disabled>Volgende stelling →</button>
 </div>
 
@@ -65,6 +80,10 @@
   <h1>📊 Sessie afgerond</h1>
   <p id="review-session-name" class="hint"></p>
   <button id="export-csv-btn" class="secondary" type="button">CSV exporteren</button>
+
+  <h2>Teams</h2>
+  <p class="hint">Klik op een team om het gemiddelde per stelling te bekijken.</p>
+  <div id="review-teams" class="card"></div>
 
   <h2>Deelnemers</h2>
   <p class="hint">Klik op een deelnemer om de antwoorden te bekijken.</p>
@@ -84,8 +103,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-<script src="js/firebase-config.js?v=3"></script>
-<script src="js/shared.js?v=3"></script>
-<script src="js/admin.js?v=3"></script>
+<script src="js/firebase-config.js?v=4"></script>
+<script src="js/shared.js?v=4"></script>
+<script src="js/admin.js?v=4"></script>
 </body>
 </html>

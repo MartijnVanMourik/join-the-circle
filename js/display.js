@@ -1,4 +1,5 @@
-const PALETTE = [
+// Terugvalkleuren voor deelnemers zonder (geldig) team — komt normaal niet voor.
+const FALLBACK_PALETTE = [
   "#ef4444", "#f97316", "#eab308", "#22c55e",
   "#06b6d4", "#3b82f6", "#8b5cf6", "#ec4899",
 ];
@@ -13,6 +14,7 @@ const isAdminMode = params.get("admin") === "1";
 let sessionData = null;
 let frozenOrder = null;
 let tickTimer = null;
+let legendRendered = false;
 const dotElements = {};
 
 const arena = document.getElementById("arena");
@@ -33,6 +35,7 @@ const panelTally = document.getElementById("panel-tally");
 const panelTallyAgree = document.getElementById("panel-tally-agree");
 const panelTallyDisagree = document.getElementById("panel-tally-disagree");
 const panelNextBtn = document.getElementById("panel-next-btn");
+const legendEl = document.getElementById("legend");
 
 if (!sessionId) {
   document.body.innerHTML =
@@ -62,6 +65,7 @@ function render() {
   centerWordEl.textContent = sessionData.centerWord || "";
   sessionCodeHint.textContent = sessionId;
 
+  renderLegend();
   renderArena();
 
   if (sessionData.status === "lobby") {
@@ -81,15 +85,48 @@ function render() {
 
 // ---------- Deelnemers-cirkel ----------
 
+function renderLegend() {
+  if (legendRendered) return;
+  const teams = sessionData.teams;
+  if (!teams || !teams.length) return;
+  legendEl.innerHTML = teams
+    .map(
+      (t) =>
+        `<div class="legend-item"><span class="legend-dot" style="background:${t.color}"></span>${escapeHtml(t.name)}</div>`
+    )
+    .join("");
+  legendRendered = true;
+}
+
+// Groepeert deelnemer-ids per team (in de volgorde waarin teams zijn ingesteld),
+// zodat sectiegenoten bij elkaar op de boog komen te staan.
+function groupByTeam(ids, participants, teams) {
+  const groups = (teams || []).map(() => []);
+  const noTeam = [];
+  ids.forEach((id) => {
+    const teamId = participants[id] && participants[id].teamId;
+    if (teamId != null && groups[teamId]) {
+      groups[teamId].push(id);
+    } else {
+      noTeam.push(id);
+    }
+  });
+  return [].concat(...groups, noTeam);
+}
+
 function currentOrder() {
-  const ids = Object.keys((sessionData && sessionData.participants) || {});
+  const participants = (sessionData && sessionData.participants) || {};
+  const ids = Object.keys(participants);
+  const teams = sessionData.teams || [];
 
   if (sessionData.status === "lobby") {
-    return ids; // nog niet bevroren, volgt live het aanmelden
+    return groupByTeam(ids, participants, teams); // nog niet bevroren, volgt live het aanmelden
   }
 
-  if (!frozenOrder) frozenOrder = [...ids];
+  if (!frozenOrder) frozenOrder = groupByTeam(ids, participants, teams);
   ids.forEach((id) => {
+    // laatkomers achteraan toevoegen zonder de rest te herschikken (mogelijk niet
+    // naast hun sectiegenoten -- zie plan voor de afweging)
     if (!frozenOrder.includes(id)) frozenOrder.push(id);
   });
   return frozenOrder;
@@ -136,12 +173,14 @@ function renderArena() {
     if (!dot) {
       dot = document.createElement("div");
       dot.className = "participant-dot";
-      dot.style.background = PALETTE[i % PALETTE.length];
+      const team = (sessionData.teams || [])[participant.teamId];
+      dot.style.background = team ? team.color : FALLBACK_PALETTE[i % FALLBACK_PALETTE.length];
       dot.title = `${participant.name} (${participant.code})`;
       participantsLayer.appendChild(dot);
       dotElements[id] = dot;
     }
-    dot.textContent = showFullCode ? participant.code : showInitial ? participant.code[0] : "";
+    dot.textContent =
+      sessionData.showCodes === false ? "" : showFullCode ? participant.code : showInitial ? participant.code[0] : "";
     dot.style.width = `${dotSize}px`;
     dot.style.height = `${dotSize}px`;
     dot.style.marginLeft = `${-dotSize / 2}px`;

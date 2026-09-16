@@ -14,6 +14,82 @@
 
 #history-btn { margin-bottom: 8px; }
 
+.team-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.team-row input[type="text"] { flex: 1; }
+
+.team-row input[type="color"] {
+  width: 44px;
+  height: 40px;
+  padding: 2px;
+  flex: none;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: none;
+}
+
+.team-row .remove-team-btn {
+  background: white;
+  color: var(--err);
+  border: 1px solid var(--err);
+  padding: 8px 10px;
+  flex: none;
+}
+
+.switch-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 14px 0;
+  cursor: pointer;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+  flex: none;
+}
+
+.switch input { opacity: 0; width: 0; height: 0; }
+
+.switch-slider {
+  position: absolute;
+  inset: 0;
+  background: var(--border);
+  border-radius: 999px;
+  transition: background 0.15s ease;
+}
+
+.switch-slider::before {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  left: 3px;
+  top: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.15s ease;
+}
+
+.switch input:checked + .switch-slider { background: var(--accent); }
+.switch input:checked + .switch-slider::before { transform: translateX(18px); }
+
+.team-chip-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
 .statement-row {
   display: flex;
   gap: 8px;

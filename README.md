@@ -16,24 +16,33 @@ is bewust geen prioriteit.
 ## Drie schermen
 
 - **`index.html`** — organisator (eigen laptop): sessie aanmaken, stellingen + tijdslimiet
-  per stelling bewerken, QR-codes voor deelnemers- en digibordlink, live deelnemerslijst,
-  sessie besturen (volgende stelling), en achteraf een overzicht: klik op een deelnemer om
-  zijn/haar antwoorden per stelling te zien, plus CSV-export. Ook een "Eerdere sessies"-
-  overzicht om oude sessies terug te openen.
+  per stelling bewerken, **teams/secties beheren** (naam + kleur, net als de stellingen, met
+  een standaard 16-secties-set), QR-codes voor deelnemers- en digibordlink, live
+  deelnemerslijst, sessie besturen (volgende stelling, schakelaar "Toon codes op digibord"),
+  en achteraf een overzicht: klik op een deelnemer om zijn/haar antwoorden per stelling te
+  zien, of klik op een **team** om het teamgemiddelde per stelling te zien, plus CSV-export
+  (inclusief teamkolom). Ook een "Eerdere sessies"-overzicht om oude sessies terug te openen.
 - **`display.html?s=CODE`** — digibord/beamer: een volledige cirkel (geen open stuk meer nodig)
   met een middencirkel met het instelbare woord, deelnemers als gekleurde bolletjes met hun
-  docentencode. Rechts een vast zijpaneel met de huidige stelling, een aftelbalk (springt naar
-  0 zodra iedereen heeft geantwoord) en, na sluiten, de tellingen — zo blijft de cirkel zelf zo
-  groot mogelijk in plaats van ruimte te delen met een paneel onderin. Open met `&admin=1`
-  erbij om ook de "volgende stelling"-knop rechtstreeks op het digibord te krijgen (handig bij
-  een aanraakscherm, zodat je niet steeds naar je laptop hoeft). De puntgrootte van de
+  docentencode. Deelnemers staan **geclusterd per team/sectie** op de boog, elk team in zijn
+  eigen kleur, met een **legenda** rechtsonder in het zijpaneel (kleur ↔ sectienaam) — zo zie je
+  in één oogopslag welke secties dichter naar het midden bewegen. Rechts verder een vast
+  zijpaneel met de huidige stelling, een aftelbalk (springt naar 0 zodra iedereen heeft
+  geantwoord) en, na sluiten, de tellingen — zo blijft de cirkel zelf zo groot mogelijk in
+  plaats van ruimte te delen met een paneel onderin. Open met `&admin=1` erbij om ook de
+  "volgende stelling"-knop rechtstreeks op het digibord te krijgen (handig bij een
+  aanraakscherm, zodat je niet steeds naar je laptop hoeft). De puntgrootte van de
   deelnemer-bolletjes schaalt automatisch mee met het aantal deelnemers (kleiner bij grote
   groepen) zodat ze bij grote groepen niet over elkaar heen gaan vallen — zie "Belasting/schaal"
-  hieronder.
+  hieronder. De organisator kan live een schakelaar omzetten om de codes in de bolletjes
+  helemaal te verbergen (`showCodes`) — handig bij zeer grote groepen waar zelfs de
+  auto-verkleinde tekst niet meer prettig leesbaar is; de kleur/positie/clustering blijven dan
+  gewoon zichtbaar.
 - **`join.html?s=CODE`** — deelnemer (telefoon/laptop): sessiecode (voorgevuld via de link/QR),
-  naam en **eigen bestaande docentencode** invullen (geen automatisch gegenereerde code —
-  docenten kennen hun eigen code al), daarna per stelling Mee eens / Niet mee eens met dezelfde
-  aftelbalk.
+  naam, **eigen bestaande docentencode** invullen (geen automatisch gegenereerde code —
+  docenten kennen hun eigen code al) en een **sectie/team** kiezen uit een dropdown die
+  verschijnt zodra een geldige sessiecode is ingetypt (zelfde patroon als de teamkeuze in de
+  kamelenrace), daarna per stelling Mee eens / Niet mee eens met dezelfde aftelbalk.
 
 ## Hoe de positie op het digibord wordt berekend
 
@@ -58,14 +67,23 @@ sessions/{sessionId}
   name, centerWord, status: "lobby" | "active" | "finished"
   currentStatementIndex (-1 vóór start), statementOpenedAt (server-timestamp)
   statements: [{ text, durationSec }]
+  teams: [{ name, color }]
+  showCodes: boolean (live aan/uit te zetten tijdens de sessie)
   createdAt
 
 sessions/{sessionId}/participants/{participantId}
-  name, code (docentencode), joinedAt
+  name, code (docentencode), teamId (index in teams[]), joinedAt
 
 sessions/{sessionId}/responses/{statementIndex}/{participantId}
   value: 0 | 1, ts
 ```
+
+`teamId` verwijst naar de index in de `teams`-array van de sessie — zelfde principe als
+`statementIndex`, geen aparte id-generatie nodig. Op het digibord worden deelnemers eerst
+gegroepeerd per team (in de ingestelde teamvolgorde) en dan pas bevroren zodra de sessie
+start (`groupByTeam()` in `js/display.js`) — laatkomers worden achteraan de bevroren
+volgorde toegevoegd en staan dus mogelijk niet naast hun sectiegenoten; dat is een bewuste
+afweging om het "geen herschikking na bevriezen"-principe niet te doorbreken.
 
 `sessionId` is tevens de 4-letter sessiecode die deelnemers intypen/scannen. Sessies worden
 nooit verwijderd, dus ze blijven bruikbaar als geschiedenis (zie "Eerdere sessies" in de
@@ -126,6 +144,8 @@ js/shared.js                                   — afgeleide logica, gedeeld doo
                                                   (resterende tijd, gesloten-status, score)
 data/statements.json                           — standaard stellingenset ("Digitale
                                                   geletterdheid"), bewerkbaar in de app zelf
+data/teams.json                                — standaard teams/secties (16, met kleur),
+                                                  bewerkbaar in de app zelf
 database.rules.json                            — Realtime Database rules (handmatig geplakt
                                                   in de Firebase Console, niet automatisch
                                                   gedeployed)
@@ -159,6 +179,14 @@ naar het lobby-scherm schakelde.
 Nog niet getest: meerdere *gelijktijdige, echte* deelnemers (dit is met gesimuleerde/geïnjecteerde
 data getest, niet met 60 losse browsersessies tegelijk), en het "Eerdere sessies"-overzicht met
 veel sessies in de lijst.
+
+**Teams/secties:** herhaald getest met 100 gesimuleerde deelnemers verdeeld over de 16
+standaardsecties, elk met een eigen "basis-instemming" zodat er echte verschillen tussen
+secties ontstaan. Clustering per team, teamkleuren, de legenda (16 items, 2 kolommen) en de
+"Toon codes"-schakelaar werkten allemaal meteen goed. Het teamgemiddelde in het
+overzichtsscherm is handmatig gecontroleerd tegen de sectie met de hoogste ingestelde
+instemming (Oop, 80-100% "mee eens" per stelling) — kwam overeen met wie op het digibord het
+dichtst bij het midden stond.
 
 ## Bekende keuzes / beperkingen
 

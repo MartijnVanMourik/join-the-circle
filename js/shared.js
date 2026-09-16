@@ -78,6 +78,38 @@ function computeParticipantVisibleScore(session, participantId) {
   return score;
 }
 
+// Geaggregeerde antwoorden per stelling voor één team: hoeveel teamleden hebben
+// geantwoord en hoeveel daarvan "mee eens" kozen.
+function computeTeamStats(session, teamId) {
+  const participants = session.participants || {};
+  const statements = session.statements || [];
+  const responses = session.responses || {};
+
+  const memberIds = Object.keys(participants).filter((pid) => participants[pid].teamId === teamId);
+
+  const perStatement = statements.map((_, idx) => {
+    const statementResponses = responses[idx] || {};
+    let answered = 0;
+    let agree = 0;
+    memberIds.forEach((pid) => {
+      const r = statementResponses[pid];
+      if (r) {
+        answered++;
+        agree += r.value;
+      }
+    });
+    return { answered, agree };
+  });
+
+  return { memberCount: memberIds.length, perStatement };
+}
+
+function escapeHtml(str) {
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
+}
+
 function generateSessionCode() {
   const letters = "ABCDEFGHJKLMNPQRSTUVWXYZ"; // I en O weggelaten, lijken op 1/0
   let code = "";

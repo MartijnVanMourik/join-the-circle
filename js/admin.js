@@ -84,13 +84,78 @@ function readStatementsFromEditor() {
     .filter((s) => s.text.length > 0);
 }
 
+// ---------- Setup: teams bewerken ----------
+
+const teamsEditor = document.getElementById("teams-editor");
+const addTeamBtn = document.getElementById("add-team-btn");
+const resetTeamsBtn = document.getElementById("reset-teams-btn");
+
+let defaultTeamsData = null;
+
+function addTeamRow(name = "", color = "#6d4aff") {
+  const row = document.createElement("div");
+  row.className = "team-row";
+
+  const nameInput = document.createElement("input");
+  nameInput.type = "text";
+  nameInput.value = name;
+  nameInput.placeholder = "Teamnaam";
+
+  const colorInput = document.createElement("input");
+  colorInput.type = "color";
+  colorInput.value = color;
+  colorInput.title = "Kleur op het digibord";
+
+  const removeBtn = document.createElement("button");
+  removeBtn.type = "button";
+  removeBtn.className = "remove-team-btn";
+  removeBtn.textContent = "✕";
+  removeBtn.addEventListener("click", () => row.remove());
+
+  row.appendChild(nameInput);
+  row.appendChild(colorInput);
+  row.appendChild(removeBtn);
+  teamsEditor.appendChild(row);
+}
+
+function loadTeamsIntoEditor(data) {
+  teamsEditor.innerHTML = "";
+  data.teams.forEach((t) => addTeamRow(t.name, t.color));
+}
+
+async function loadDefaultTeams() {
+  const res = await fetch("data/teams.json");
+  defaultTeamsData = await res.json();
+  loadTeamsIntoEditor(defaultTeamsData);
+}
+
+addTeamBtn.addEventListener("click", () => addTeamRow());
+resetTeamsBtn.addEventListener("click", () => {
+  if (defaultTeamsData) loadTeamsIntoEditor(defaultTeamsData);
+});
+
+function readTeamsFromEditor() {
+  return Array.from(teamsEditor.querySelectorAll(".team-row"))
+    .map((row) => ({
+      name: row.querySelector('input[type="text"]').value.trim(),
+      color: row.querySelector('input[type="color"]').value,
+    }))
+    .filter((t) => t.name.length > 0);
+}
+
 createSessionBtn.addEventListener("click", async () => {
   const name = sessionNameInput.value.trim() || "Stap in de cirkel";
   const centerWord = centerWordInput.value.trim() || "Digitale geletterdheid";
   const statements = readStatementsFromEditor();
+  const teams = readTeamsFromEditor();
 
   if (statements.length === 0) {
     setupError.textContent = "Voeg minimaal één stelling toe.";
+    setupError.classList.remove("hidden");
+    return;
+  }
+  if (teams.length === 0) {
+    setupError.textContent = "Voeg minimaal één team toe.";
     setupError.classList.remove("hidden");
     return;
   }
@@ -116,6 +181,8 @@ createSessionBtn.addEventListener("click", async () => {
       status: "lobby",
       currentStatementIndex: -1,
       statements,
+      teams,
+      showCodes: true,
       createdAt: firebase.database.ServerValue.TIMESTAMP,
     });
 
@@ -200,6 +267,7 @@ const controlTally = document.getElementById("control-tally");
 const tallyAgree = document.getElementById("tally-agree");
 const tallyDisagree = document.getElementById("tally-disagree");
 const nextStatementBtn = document.getElementById("next-statement-btn");
+const showCodesToggle = document.getElementById("show-codes-toggle");
 
 function renderControl() {
   const idx = sessionData.currentStatementIndex;
@@ -209,11 +277,16 @@ function renderControl() {
 
   controlProgress.textContent = `Stelling ${idx + 1} van ${statements.length}`;
   controlStatementText.textContent = statement.text;
+  showCodesToggle.checked = sessionData.showCodes !== false;
 
   tickControl();
   clearInterval(controlTimer);
   controlTimer = setInterval(tickControl, 250);
 }
+
+showCodesToggle.addEventListener("change", () => {
+  sessionRef.update({ showCodes: showCodesToggle.checked });
+});
 
 function tickControl() {
   const idx = sessionData.currentStatementIndex;
@@ -252,6 +325,7 @@ nextStatementBtn.addEventListener("click", async () => {
 // ---------- Review ----------
 
 const reviewSessionName = document.getElementById("review-session-name");
+const reviewTeams = document.getElementById("review-teams");
 const reviewParticipants = document.getElementById("review-participants");
 const reviewDetail = document.getElementById("review-detail");
 const exportCsvBtn = document.getElementById("export-csv-btn");
@@ -260,14 +334,26 @@ const backToSetupBtn = document.getElementById("back-to-setup-btn");
 function renderReview() {
   reviewSessionName.textContent = `${sessionData.name} — sessiecode ${sessionId}`;
   const participants = sessionData.participants || {};
+  const teams = sessionData.teams || [];
+  reviewTeams.innerHTML = "";
   reviewParticipants.innerHTML = "";
   reviewDetail.classList.add("hidden");
 
-  Object.entries(participants).forEach(([participantId, p]) => {
-    const { score, answered } = computeParticipantScore(sessionData, participantId);
+  teams.forEach((team, teamId) => {
+    const memberCount = Object.values(participants).filter((p) => p.teamId === teamId).length;
     const chip = document.createElement("span");
     chip.className = "participant-chip clickable";
-    chip.textContent = `${p.name} (${p.code}) — ${score}/${answered}`;
+    chip.innerHTML = `<span class="team-chip-dot" style="background:${team.color}"></span>${escapeHtml(team.name)} (${memberCount})`;
+    chip.addEventListener("click", () => renderTeamDetail(teamId, team));
+    reviewTeams.appendChild(chip);
+  });
+
+  Object.entries(participants).forEach(([participantId, p]) => {
+    const { score, answered } = computeParticipantScore(sessionData, participantId);
+    const team = teams[p.teamId];
+    const chip = document.createElement("span");
+    chip.className = "participant-chip clickable";
+    chip.innerHTML = `${team ? `<span class="team-chip-dot" style="background:${team.color}"></span>` : ""}${escapeHtml(p.name)} (${escapeHtml(p.code)}) — ${score}/${answered}`;
     chip.addEventListener("click", () => renderParticipantDetail(participantId, p));
     reviewParticipants.appendChild(chip);
   });
@@ -279,7 +365,7 @@ function renderParticipantDetail(participantId, participant) {
   const statements = sessionData.statements || [];
   const responses = sessionData.responses || {};
 
-  let html = `<h3>${participant.name} (${participant.code})</h3><table><tr><th>#</th><th>Stelling</th><th>Antwoord</th></tr>`;
+  let html = `<h3>${escapeHtml(participant.name)} (${escapeHtml(participant.code)})</h3><table><tr><th>#</th><th>Stelling</th><th>Antwoord</th></tr>`;
   statements.forEach((s, idx) => {
     const r = responses[idx] && responses[idx][participantId];
     const answerText = r ? (r.value === 1 ? "Mee eens" : "Niet mee eens") : "Geen antwoord";
@@ -290,10 +376,21 @@ function renderParticipantDetail(participantId, participant) {
   reviewDetail.classList.remove("hidden");
 }
 
-function escapeHtml(str) {
-  const div = document.createElement("div");
-  div.textContent = str;
-  return div.innerHTML;
+function renderTeamDetail(teamId, team) {
+  const statements = sessionData.statements || [];
+  const stats = computeTeamStats(sessionData, teamId);
+
+  let html = `<h3><span class="team-chip-dot" style="background:${team.color}"></span>${escapeHtml(team.name)} — ${stats.memberCount} deelnemers</h3><table><tr><th>#</th><th>Stelling</th><th>Mee eens</th></tr>`;
+  statements.forEach((s, idx) => {
+    const st = stats.perStatement[idx];
+    const cell = st.answered > 0
+      ? `${st.agree} van ${st.answered} (${Math.round((st.agree / st.answered) * 100)}%)`
+      : "Geen antwoorden";
+    html += `<tr><td>${idx + 1}</td><td>${escapeHtml(s.text)}</td><td>${cell}</td></tr>`;
+  });
+  html += "</table>";
+  reviewDetail.innerHTML = html;
+  reviewDetail.classList.remove("hidden");
 }
 
 function csvEscape(value) {
@@ -306,13 +403,15 @@ exportCsvBtn.addEventListener("click", () => {
   const statements = sessionData.statements || [];
   const participants = sessionData.participants || {};
   const responses = sessionData.responses || {};
+  const teams = sessionData.teams || [];
 
-  const header = ["Naam", "Code", ...statements.map((s, i) => `Stelling ${i + 1}`), "Score"];
+  const header = ["Naam", "Code", "Team", ...statements.map((s, i) => `Stelling ${i + 1}`), "Score"];
   const rows = [header];
 
   Object.entries(participants).forEach(([participantId, p]) => {
     const { score } = computeParticipantScore(sessionData, participantId);
-    const row = [p.name, p.code];
+    const team = teams[p.teamId];
+    const row = [p.name, p.code, team ? team.name : ""];
     statements.forEach((s, idx) => {
       const r = responses[idx] && responses[idx][participantId];
       row.push(r ? (r.value === 1 ? "Mee eens" : "Niet mee eens") : "");
@@ -338,6 +437,7 @@ backToSetupBtn.addEventListener("click", () => {
   sessionData = null;
   sessionNameInput.value = "";
   loadStatementsIntoEditor(defaultStatementsData);
+  if (defaultTeamsData) loadTeamsIntoEditor(defaultTeamsData);
   showScreen(setupScreen);
 });
 
@@ -408,4 +508,5 @@ function openSessionFromHistory(code) {
 // ---------- Init ----------
 
 loadDefaultStatements();
+loadDefaultTeams();
 showScreen(setupScreen);
