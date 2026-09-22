@@ -15,10 +15,14 @@ is bewust geen prioriteit.
 
 ## Drie schermen
 
-- **`index.html`** — organisator (eigen laptop): sessie aanmaken, stellingen + tijdslimiet
-  per stelling bewerken, **teams/secties beheren** (naam + kleur, net als de stellingen, met
-  een standaard 16-secties-set), QR-codes voor deelnemers- en digibordlink, live
-  deelnemerslijst, sessie besturen (volgende stelling, schakelaar "Toon codes op digibord"),
+- **`index.html`** — organisator (eigen laptop): sessie aanmaken, een schakelaar
+  **"Docentencode gebruiken"** (uit = deelnemers vullen geen eigen code in; er wordt dan
+  automatisch een code op basis van hun naam gebruikt, puur voor intern gebruik — die code
+  wordt sowieso nooit in de cirkels op het digibord getoond wanneer deze schakelaar uit
+  staat), stellingen + tijdslimiet per stelling bewerken, **teams/secties beheren** (naam +
+  kleur, net als de stellingen, met een standaard 16-secties-set), QR-codes voor deelnemers-
+  en digibordlink, live deelnemerslijst, sessie besturen (volgende stelling, schakelaar "Toon
+  codes op digibord"),
   en achteraf een overzicht: klik op een deelnemer om zijn/haar antwoorden per stelling te
   zien, of klik op een **team** om het teamgemiddelde per stelling te zien, plus CSV-export
   (inclusief teamkolom). Ook een "Eerdere sessies"-overzicht om oude sessies terug te openen.
@@ -42,12 +46,16 @@ is bewust geen prioriteit.
   hieronder. De organisator kan live een schakelaar omzetten om de codes in de bolletjes
   helemaal te verbergen (`showCodes`) — handig bij zeer grote groepen waar zelfs de
   auto-verkleinde tekst niet meer prettig leesbaar is; de kleur/positie/clustering blijven dan
-  gewoon zichtbaar.
+  gewoon zichtbaar. Staat "Docentencode gebruiken" (sessie-instelling) uit, dan tonen de
+  bolletjes sowieso nooit tekst — alleen de teamkleur, ongeacht deze schakelaar.
 - **`join.html?s=CODE`** — deelnemer (telefoon/laptop): sessiecode (voorgevuld via de link/QR),
-  naam, **eigen bestaande docentencode** invullen (geen automatisch gegenereerde code —
-  docenten kennen hun eigen code al) en een **sectie/team** kiezen uit een dropdown die
-  verschijnt zodra een geldige sessiecode is ingetypt (zelfde patroon als de teamkeuze in de
-  kamelenrace), daarna per stelling Mee eens / Niet mee eens met dezelfde aftelbalk.
+  naam, en — als de organisator "Docentencode gebruiken" heeft aangezet (standaard) — **eigen
+  bestaande docentencode** invullen (geen automatisch gegenereerde code — docenten kennen hun
+  eigen code al); staat die instelling uit, dan blijft dat veld verborgen en krijgt de
+  deelnemer een code op basis van zijn/haar naam. Daarna een **sectie/team** kiezen uit een
+  dropdown die verschijnt zodra een geldige (4-tekens) sessiecode is ingetypt (zelfde patroon
+  als de teamkeuze in de kamelenrace), en per stelling Mee eens / Niet mee eens met dezelfde
+  aftelbalk.
 
 ## Hoe de positie op het digibord wordt berekend
 
@@ -73,11 +81,13 @@ sessions/{sessionId}
   currentStatementIndex (-1 vóór start), statementOpenedAt (server-timestamp)
   statements: [{ text, durationSec }]
   teams: [{ name, color }]
+  requireCode: boolean (vast per sessie, gekozen bij aanmaken)
   showCodes: boolean (live aan/uit te zetten tijdens de sessie)
   createdAt
 
 sessions/{sessionId}/participants/{participantId}
-  name, code (docentencode), teamId (index in teams[]), joinedAt
+  name, code (docentencode, of automatisch gegenereerd uit de naam als requireCode false is),
+  teamId (index in teams[]), joinedAt
 
 sessions/{sessionId}/responses/{statementIndex}/{participantId}
   value: 0 | 1, ts
@@ -200,6 +210,17 @@ naar het lobby-scherm schakelde.
 Nog niet getest: meerdere *gelijktijdige, echte* deelnemers (dit is met gesimuleerde/geïnjecteerde
 data getest, niet met 60 losse browsersessies tegelijk), en het "Eerdere sessies"-overzicht met
 veel sessies in de lijst.
+
+**Docentencode optioneel + echte mobiele bug gevonden en opgelost:** tijdens live gebruik op
+een telefoon bleek de sectiekeuze soms "Onbekende sessiecode" te tonen ondanks een geldige
+code. Oorzaak: de sessiecode-opzoekactie draaide bij elke toetsaanslag zodra er 3+ tekens
+stonden, en bij een via QR voorgevulde (of snel getypte) code konden een vroege, terecht
+foute 3-tekens-opzoeking en de latere juiste 4-tekens-opzoeking in de verkeerde volgorde
+binnenkomen — de oudere, foute reactie overschreef dan de juiste. Opgelost door pas vanaf
+exact 4 tekens (de vaste lengte van een sessiecode) te zoeken, plus een volgnummer dat een
+verlate/oude reactie altijd negeert. Losse toevoeging: een sessie-brede schakelaar
+"Docentencode gebruiken" (uit = geen invoerveld, automatische naam-code, nooit tekst in de
+digibord-cirkels) is er in dezelfde beurt bij gekomen en getest.
 
 **Teams/secties:** herhaald getest met 100 gesimuleerde deelnemers verdeeld over de 16
 standaardsecties, elk met een eigen "basis-instemming" zodat er echte verschillen tussen

@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Stap in de cirkel — Meedoen</title>
-<link rel="stylesheet" href="css/style.css?v=12">
-<link rel="stylesheet" href="css/join.css?v=12">
+<link rel="stylesheet" href="css/style.css?v=14">
+<link rel="stylesheet" href="css/join.css?v=14">
 </head>
 <body>
 
@@ -19,11 +19,13 @@
     Jouw naam
     <input id="name-input" type="text" maxlength="30" placeholder="Naam">
   </label>
-  <label>
-    Jouw docentencode
-    <input id="code-input" type="text" maxlength="8" autocapitalize="characters" placeholder="bv. ABC">
-  </label>
-  <p class="hint">Gebruik je eigen, bestaande docentencode — die wordt straks op het scherm getoond.</p>
+  <div id="code-field">
+    <label>
+      Jouw docentencode
+      <input id="code-input" type="text" maxlength="8" autocapitalize="characters" placeholder="bv. ABC">
+    </label>
+    <p class="hint">Gebruik je eigen, bestaande docentencode — die wordt straks op het scherm getoond.</p>
+  </div>
   <label>
     Sectie/team
     <select id="team-select"><option value="" disabled selected>Vul eerst de sessiecode in...</option></select>
@@ -58,7 +60,7 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
-<script src="js/firebase-config.js?v=12"></script>
-<script src="js/join.js?v=12"></script>
+<script src="js/firebase-config.js?v=14"></script>
+<script src="js/join.js?v=14"></script>
 </body>
 </html>

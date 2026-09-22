@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Stap in de cirkel — Organisator</title>
-<link rel="stylesheet" href="css/style.css?v=12">
-<link rel="stylesheet" href="css/admin.css?v=12">
+<link rel="stylesheet" href="css/style.css?v=14">
+<link rel="stylesheet" href="css/admin.css?v=14">
 </head>
 <body>
 
@@ -21,6 +21,15 @@
     Woord in het midden
     <input id="center-word-input" type="text" maxlength="30">
   </label>
+
+  <label class="switch-row">
+    <span class="switch">
+      <input id="require-code-toggle" type="checkbox" checked>
+      <span class="switch-slider"></span>
+    </span>
+    Docentencode gebruiken
+  </label>
+  <p class="hint">Uitgezet: deelnemers vullen geen eigen code in, er wordt automatisch een code op basis van hun naam getoond.</p>
 
   <h2>Stellingen</h2>
   <p class="hint">Pas gerust tekst en tijdslimiet aan of voeg stellingen toe/verwijder ze — je kunt altijd de standaardset terugzetten.</p>
@@ -109,8 +118,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-<script src="js/firebase-config.js?v=12"></script>
-<script src="js/shared.js?v=12"></script>
-<script src="js/admin.js?v=12"></script>
+<script src="js/firebase-config.js?v=14"></script>
+<script src="js/shared.js?v=14"></script>
+<script src="js/admin.js?v=14"></script>
 </body>
 </html>

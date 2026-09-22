@@ -179,8 +179,8 @@ function renderArena() {
       participantsLayer.appendChild(dot);
       dotElements[id] = dot;
     }
-    dot.textContent =
-      sessionData.showCodes === false ? "" : showFullCode ? participant.code : showInitial ? participant.code[0] : "";
+    const noCodeMode = sessionData.requireCode === false || sessionData.showCodes === false;
+    dot.textContent = noCodeMode ? "" : showFullCode ? participant.code : showInitial ? participant.code[0] : "";
     dot.style.width = `${dotSize}px`;
     dot.style.height = `${dotSize}px`;
     dot.style.marginLeft = `${-dotSize / 2}px`;
