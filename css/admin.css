@@ -1,4 +1,4 @@
-#setup-screen, #control-screen, #review-screen, #history-screen {
+#setup-screen, #lobby-screen, #control-screen, #review-screen, #history-screen {
   max-width: 640px;
 }
 
@@ -123,11 +123,17 @@
 }
 
 .join-link-card {
-  max-width: 260px;
+  max-width: 300px;
+  margin-inline: auto;
   text-align: center;
 }
 
 .link-card img, .link-card canvas { margin: 0 auto; }
+
+.join-link-card #join-url-display {
+  font-size: 0.82rem;
+  overflow-wrap: anywhere;
+}
 
 #lobby-participants, #review-participants, #history-list {
   min-height: 40px;
