@@ -1,6 +1,13 @@
 // Gedeelde, puur afgeleide logica — niets hiervan wordt apart in de database opgeslagen,
 // zodat display/admin/join altijd consistent dezelfde stand berekenen.
 
+// Zelfde ?v=N als op de <script>/<link>-tags in de HTML, hier afgelezen van het eigen
+// script-tag zodat data/*.json-fetches meebusten met een cache-versie-ophoging i.p.v. te
+// blijven hangen op een oude cached versie (bv. na het bijwerken van de stellingenset).
+const CACHE_VERSION =
+  (document.currentScript && new URLSearchParams(document.currentScript.src.split("?")[1] || "").get("v")) ||
+  Date.now();
+
 function countParticipants(session) {
   return session.participants ? Object.keys(session.participants).length : 0;
 }

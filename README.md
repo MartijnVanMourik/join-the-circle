@@ -127,7 +127,12 @@ Claude Code werkt.
 **Cache-busting:** alle lokale `<script>`/`<link>`-tags hebben een `?v=N` achter de bestandsnaam.
 Browsers (en GitHub Pages) cachen js/css anders hardnekkig, waardoor een teruggekeerde
 digibord-laptop een oude versie kan blijven tonen na een update. Hoog het nummer op in alle
-drie de HTML-bestanden wanneer je een `.js`- of `.css`-bestand wijzigt.
+drie de HTML-bestanden wanneer je een `.js`- of `.css`-bestand wijzigt. `js/shared.js` leest
+dat nummer van zijn eigen `<script src="...?v=N">` (als `CACHE_VERSION`) en plakt het ook
+achter de `fetch()`-aanroepen naar `data/statements.json` en `data/teams.json` in
+`js/admin.js` — zonder die tweede stap bleef een update aan die JSON-bestanden zelf
+hardnekkig hangen op een oude gecachete versie, ook al klopte het versienummer op de
+HTML-tags al.
 
 ## Deployen (GitHub Pages)
 
@@ -158,10 +163,21 @@ database.rules.json                            — Realtime Database rules (hand
 
 ## Standaard stellingenset
 
-Thema "Digitale geletterdheid", 10 stellingen die kennis, huidige lespraktijk, schoolbeleid,
-didactische vaardigheid, houding/zorgen en zelfvertrouwen rond AI meten — zie
-`data/statements.json`. Volledig bewerkbaar (tekst, tijdslimiet, aantal) in het
-organisatorscherm vóór het aanmaken van een sessie.
+Thema "Digitale geletterdheid", 13 stellingen (20 sec. per stelling) die kennis, huidige
+praktijk, vaardigheid, team-/schoolcontext, houding en lef rond AI meten — zie
+`data/statements.json`. Opgesteld en aangescherpt door de werkgroep, met twee dingen bewust
+verwerkt:
+- **Inclusief voor OOP** (onderwijsondersteunend personeel, die geen leerlingen in de klas
+  hebben): stellingen die anders puur les-/leerlinggericht zouden zijn, zijn verbreed naar
+  "leerlingen/ collega's" of "in mijn werk" i.p.v. alleen "in mijn les".
+- **"Mee eens" betekent consistent een stap richting het midden** — elke stelling is zo
+  geformuleerd dat instemming altijd meer AI-betrokkenheid/-vertrouwen uitdrukt, nooit het
+  omgekeerde (een eerdere conceptversie had hier nog een stelling die averechts scoorde).
+
+Volledig bewerkbaar (tekst, tijdslimiet, aantal) in het organisatorscherm vóór het aanmaken
+van een sessie, en op te slaan als eigen configuratie via "💾 Configuratie opslaan" (zie
+hieronder) zodat latere aanpassingen aan dit bestand een al opgeslagen configuratie niet
+overschrijven.
 
 ## Wat al getest is
 

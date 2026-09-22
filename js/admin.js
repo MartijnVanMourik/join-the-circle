@@ -64,7 +64,7 @@ function loadStatementsIntoEditor(data) {
 }
 
 async function loadDefaultStatements() {
-  const res = await fetch("data/statements.json");
+  const res = await fetch(`data/statements.json?v=${CACHE_VERSION}`);
   defaultStatementsData = await res.json();
   loadStatementsIntoEditor(defaultStatementsData);
 }
@@ -124,7 +124,7 @@ function loadTeamsIntoEditor(data) {
 }
 
 async function loadDefaultTeams() {
-  const res = await fetch("data/teams.json");
+  const res = await fetch(`data/teams.json?v=${CACHE_VERSION}`);
   defaultTeamsData = await res.json();
   loadTeamsIntoEditor(defaultTeamsData);
 }

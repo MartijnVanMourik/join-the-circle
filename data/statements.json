@@ -1,16 +1,19 @@
 {
   "centerWord": "Digitale geletterdheid",
-  "statementDurationSec": 30,
+  "statementDurationSec": 20,
   "statements": [
     { "text": "Ik heb een goed beeld van wat generatieve AI (zoals ChatGPT) wel en niet kan." },
-    { "text": "Ik gebruik AI-tools regelmatig bij het voorbereiden van mijn lessen." },
-    { "text": "Ik laat leerlingen in mijn les weleens bewust met AI werken." },
-    { "text": "Binnen mijn school/team hebben we duidelijke afspraken over AI-gebruik in de klas." },
-    { "text": "Ik kan leerlingen uitleggen hoe ze AI verantwoord en kritisch kunnen gebruiken." },
-    { "text": "Ik maak me zorgen over de invloed van AI op het leerproces van leerlingen." },
-    { "text": "Ik weet redelijk goed te herkennen wanneer een leerling AI heeft gebruikt bij een opdracht." },
+    { "text": "Ik gebruik AI-tools bij het voorbereiden van mijn lessen/ tijdens mijn werkzaamheden." },
+    { "text": "Door AI heb ik mijn manier van werken aangepast (bijvoorbeeld toetsen, beoordelen, administratie of communicatie)." },
+    { "text": "Ik betrek collega's bewust bij het gebruik van AI in mijn werk (OOP) of laat leerlingen bewust met AI werken (OP)." },
+    { "text": "Ik weet goed te herkennen wanneer een tekst of product met AI is gemaakt." },
+    { "text": "Ik kan leerlingen uitleggen hoe ze AI verantwoord en kritisch kunnen gebruiken of ga hier met collega's over in gesprek." },
     { "text": "Ik voel me voldoende toegerust om collega's te helpen met vragen over AI." },
-    { "text": "Door AI heb ik mijn manier van toetsen of beoordelen al aangepast." },
-    { "text": "Ik durf zelf nieuwe AI-toepassingen uit te proberen in mijn lessen." }
+    { "text": "Binnen mijn sectie/ team hebben we duidelijke afspraken over AI-gebruik in ons werk." },
+    { "text": "Ik vind dat Han Fortmann het gebruik van AI voldoende stimuleert." },
+    { "text": "Ik vind dat Han Fortmann het gebruik van AI voldoende faciliteert (bijvoorbeeld tijd, tools of scholing)." },
+    { "text": "Ik voel me vrij om AI in mijn werk te gebruiken." },
+    { "text": "Ik vind dat AI kansen biedt om het leren en werken op onze school te verbeteren." },
+    { "text": "Ik durf zelf nieuwe AI-toepassingen uit te proberen in mijn werk." }
   ]
 }
