@@ -22,6 +22,11 @@ is bewust geen prioriteit.
   en achteraf een overzicht: klik op een deelnemer om zijn/haar antwoorden per stelling te
   zien, of klik op een **team** om het teamgemiddelde per stelling te zien, plus CSV-export
   (inclusief teamkolom). Ook een "Eerdere sessies"-overzicht om oude sessies terug te openen.
+  Met **"💾 Configuratie opslaan"** bewaar je de huidige stellingen/teams/middenwoord in
+  `localStorage` van die browser, zodat je het scherm kunt inrichten zonder meteen een sessie
+  aan te maken — bij een volgend bezoek (of na "← Nieuwe sessie") staat je eigen configuratie
+  automatisch weer klaar in plaats van de standaardset. Puur lokaal aan die browser/dat
+  apparaat gekoppeld, net als de auto-rejoin van deelnemers in `join.js`.
 - **`display.html?s=CODE`** — digibord/beamer: een volledige cirkel (geen open stuk meer nodig)
   met een middencirkel met het instelbare woord, deelnemers als gekleurde bolletjes met hun
   docentencode. Deelnemers staan **geclusterd per team/sectie** op de boog, elk team in zijn

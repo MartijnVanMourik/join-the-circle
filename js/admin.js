@@ -60,7 +60,7 @@ function addStatementRow(text = "", durationSec = 30) {
 function loadStatementsIntoEditor(data) {
   centerWordInput.value = data.centerWord;
   statementsEditor.innerHTML = "";
-  data.statements.forEach((s) => addStatementRow(s.text, data.statementDurationSec || 30));
+  data.statements.forEach((s) => addStatementRow(s.text, s.durationSec || data.statementDurationSec || 30));
 }
 
 async function loadDefaultStatements() {
@@ -142,6 +142,48 @@ function readTeamsFromEditor() {
     }))
     .filter((t) => t.name.length > 0);
 }
+
+// ---------- Configuratie opslaan (los van een sessie) ----------
+
+const SAVED_CONFIG_KEY = "stapindecirkel_config";
+const saveConfigBtn = document.getElementById("save-config-btn");
+const saveConfigMsg = document.getElementById("save-config-msg");
+
+function loadSavedConfig() {
+  try {
+    return JSON.parse(localStorage.getItem(SAVED_CONFIG_KEY));
+  } catch {
+    return null;
+  }
+}
+
+// Vult de editors met de opgeslagen configuratie als die er is, anders met de standaardset.
+function applySavedOrDefaultConfig() {
+  const saved = loadSavedConfig();
+  if (saved) {
+    centerWordInput.value = saved.centerWord || centerWordInput.value;
+    statementsEditor.innerHTML = "";
+    (saved.statements || []).forEach((s) => addStatementRow(s.text, s.durationSec));
+    teamsEditor.innerHTML = "";
+    (saved.teams || []).forEach((t) => addTeamRow(t.name, t.color));
+  } else {
+    if (defaultStatementsData) loadStatementsIntoEditor(defaultStatementsData);
+    if (defaultTeamsData) loadTeamsIntoEditor(defaultTeamsData);
+  }
+}
+
+saveConfigBtn.addEventListener("click", () => {
+  const config = {
+    centerWord: centerWordInput.value.trim() || "Digitale geletterdheid",
+    statements: readStatementsFromEditor(),
+    teams: readTeamsFromEditor(),
+  };
+  localStorage.setItem(SAVED_CONFIG_KEY, JSON.stringify(config));
+
+  saveConfigMsg.classList.remove("hidden");
+  clearTimeout(saveConfigBtn._msgTimer);
+  saveConfigBtn._msgTimer = setTimeout(() => saveConfigMsg.classList.add("hidden"), 2500);
+});
 
 createSessionBtn.addEventListener("click", async () => {
   const name = sessionNameInput.value.trim() || "Stap in de cirkel";
@@ -436,8 +478,7 @@ backToSetupBtn.addEventListener("click", () => {
   sessionRef = null;
   sessionData = null;
   sessionNameInput.value = "";
-  loadStatementsIntoEditor(defaultStatementsData);
-  if (defaultTeamsData) loadTeamsIntoEditor(defaultTeamsData);
+  applySavedOrDefaultConfig();
   showScreen(setupScreen);
 });
 
@@ -507,6 +548,9 @@ function openSessionFromHistory(code) {
 
 // ---------- Init ----------
 
-loadDefaultStatements();
-loadDefaultTeams();
+(async () => {
+  await Promise.all([loadDefaultStatements(), loadDefaultTeams()]);
+  applySavedOrDefaultConfig();
+})();
+
 showScreen(setupScreen);
