@@ -48,7 +48,20 @@
 .answer-btn.disagree { background: #6b7280; }
 .answer-btn.disagree:hover { background: #52596b; }
 
-#answered-msg {
+#answered-msg p:first-child {
   color: var(--ok);
   font-weight: 600;
+  margin-bottom: 4px;
+}
+
+#my-score-text {
+  color: var(--ink);
+}
+
+#my-progress-svg {
+  margin: 8px 0;
+}
+
+#my-progress-dot {
+  transition: cy 0.6s ease;
 }

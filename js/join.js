@@ -36,6 +36,37 @@ const timeLeftEl = document.getElementById("time-left");
 const agreeBtn = document.getElementById("agree-btn");
 const disagreeBtn = document.getElementById("disagree-btn");
 const answeredMsg = document.getElementById("answered-msg");
+const myScoreText = document.getElementById("my-score-text");
+const myProgressDot = document.getElementById("my-progress-dot");
+
+// Eigen score tot nu toe -- telt alle eigen antwoorden mee, ook op de nog openstaande
+// stelling (dit is puur feedback aan de deelnemer zelf, geen kuddegedrag-risico zoals bij
+// het digibord, dus geen reden om te wachten tot een stelling gesloten is).
+function computeMyScore() {
+  const responses = (sessionData && sessionData.responses) || {};
+  let score = 0;
+  let answered = 0;
+  Object.keys(responses).forEach((idx) => {
+    const r = responses[idx][participantId];
+    if (r) {
+      answered++;
+      score += r.value;
+    }
+  });
+  return { score, answered };
+}
+
+function showMyProgress() {
+  const { score, answered } = computeMyScore();
+  myScoreText.textContent = `${score} van de ${answered} beantwoorde stelling${answered === 1 ? "" : "en"}`;
+
+  const totalStatements = ((sessionData && sessionData.statements) || []).length || 1;
+  const fraction = Math.min(1, score / totalStatements);
+  const outerR = 35; // afstand center-cirkel (cy=42) tot buitenrand
+  const innerR = 11; // straal van de middencirkel zelf
+  const radius = outerR - (outerR - innerR) * fraction;
+  myProgressDot.setAttribute("cy", 42 - radius);
+}
 
 const CONNECTION_TIMEOUT_MS = 6000;
 const CONNECTION_TIMEOUT_MSG =
@@ -293,6 +324,7 @@ function showStatement() {
         hasAnsweredThisStatement = true;
         agreeBtn.disabled = true;
         disagreeBtn.disabled = true;
+        showMyProgress();
         answeredMsg.classList.remove("hidden");
       }
     });
@@ -307,13 +339,15 @@ async function submitAnswer(value) {
 
   agreeBtn.disabled = true;
   disagreeBtn.disabled = true;
-  answeredMsg.classList.remove("hidden");
 
   const idx = sessionData.currentStatementIndex;
   await sessionRef.child(`responses/${idx}/${participantId}`).set({
     value,
     ts: firebase.database.ServerValue.TIMESTAMP,
   });
+
+  showMyProgress();
+  answeredMsg.classList.remove("hidden");
 }
 
 agreeBtn.addEventListener("click", () => submitAnswer(1));

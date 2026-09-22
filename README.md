@@ -50,7 +50,12 @@ is bewust geen prioriteit.
   bestaande docentencode** invullen (geen automatisch gegenereerde code — docenten kennen hun
   eigen code al), daarna een **sectie/team** kiezen uit een dropdown die verschijnt zodra een
   geldige (4-tekens) sessiecode is ingetypt (zelfde patroon als de teamkeuze in de
-  kamelenrace), en per stelling Mee eens / Niet mee eens met dezelfde aftelbalk. Het
+  kamelenrace), en per stelling Mee eens / Niet mee eens met dezelfde aftelbalk. Na het
+  antwoorden ziet de deelnemer een persoonlijke terugkoppeling: met hoeveel van de tot nu toe
+  beantwoorde stellingen die het eens was, plus een mini-visualisatie (een klein bolletje dat
+  richting het midden van een cirkeltje schuift) die dezelfde berekening gebruikt als de
+  posities op het digibord (`js/display.js`) — puur eigen feedback, dus geen kuddegedrag-risico
+  zoals bij het digibord, en werkt daarom ook al vóórdat een stelling is gesloten. Het
   wachtscherm toont "Jouw code op het scherm" alleen als de organisator "Toon codes op
   digibord" aan heeft staan.
 

@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Stap in de cirkel — Meedoen</title>
-<link rel="stylesheet" href="css/style.css?v=19">
-<link rel="stylesheet" href="css/join.css?v=19">
+<link rel="stylesheet" href="css/style.css?v=20">
+<link rel="stylesheet" href="css/join.css?v=20">
 </head>
 <body>
 
@@ -48,7 +48,16 @@
     <button id="agree-btn" class="answer-btn agree">Mee eens</button>
     <button id="disagree-btn" class="answer-btn disagree">Niet mee eens</button>
   </div>
-  <p id="answered-msg" class="hidden">Antwoord verzonden! Wacht op de volgende stelling...</p>
+  <div id="answered-msg" class="hidden">
+    <p>Antwoord verzonden!</p>
+    <p>Je was het tot nu toe met <strong id="my-score-text"></strong> eens.</p>
+    <svg id="my-progress-svg" width="84" height="84" viewBox="0 0 84 84" aria-hidden="true">
+      <circle cx="42" cy="42" r="37" fill="none" stroke="var(--border)" stroke-width="2"></circle>
+      <circle cx="42" cy="42" r="11" fill="var(--accent)"></circle>
+      <circle id="my-progress-dot" cx="42" cy="7" r="6" fill="var(--ok)" stroke="white" stroke-width="1.5"></circle>
+    </svg>
+    <p class="hint">Wacht op de volgende stelling...</p>
+  </div>
 </div>
 
 <div id="finished-screen" class="screen hidden">
@@ -58,7 +67,7 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
-<script src="js/firebase-config.js?v=19"></script>
-<script src="js/join.js?v=19"></script>
+<script src="js/firebase-config.js?v=20"></script>
+<script src="js/join.js?v=20"></script>
 </body>
 </html>
