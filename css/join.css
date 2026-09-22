@@ -3,6 +3,16 @@
   text-align: center;
 }
 
+#join-btn {
+  margin-top: 20px;
+}
+
+#session-code-input:read-only {
+  background: var(--accent-light);
+  color: #666;
+  cursor: default;
+}
+
 .time-bar {
   width: 100%;
   height: 10px;

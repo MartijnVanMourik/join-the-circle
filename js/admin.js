@@ -176,7 +176,7 @@ function applySavedOrDefaultConfig() {
 
 saveConfigBtn.addEventListener("click", () => {
   const config = {
-    centerWord: centerWordInput.value.trim() || "Digitale geletterdheid",
+    centerWord: centerWordInput.value.trim() || "AI-geletterd",
     requireCode: requireCodeToggle.checked,
     statements: readStatementsFromEditor(),
     teams: readTeamsFromEditor(),
@@ -190,7 +190,7 @@ saveConfigBtn.addEventListener("click", () => {
 
 createSessionBtn.addEventListener("click", async () => {
   const name = sessionNameInput.value.trim() || "Stap in de cirkel";
-  const centerWord = centerWordInput.value.trim() || "Digitale geletterdheid";
+  const centerWord = centerWordInput.value.trim() || "AI-geletterd";
   const statements = readStatementsFromEditor();
   const teams = readTeamsFromEditor();
 
@@ -228,7 +228,7 @@ createSessionBtn.addEventListener("click", async () => {
       statements,
       teams,
       requireCode: requireCodeToggle.checked,
-      showCodes: true,
+      showCodes: requireCodeToggle.checked,
       createdAt: firebase.database.ServerValue.TIMESTAMP,
     });
 

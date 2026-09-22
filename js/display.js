@@ -175,12 +175,18 @@ function renderArena() {
       dot.className = "participant-dot";
       const team = (sessionData.teams || [])[participant.teamId];
       dot.style.background = team ? team.color : FALLBACK_PALETTE[i % FALLBACK_PALETTE.length];
-      dot.title = `${participant.name} (${participant.code})`;
+      dot.title = participant.code ? `${participant.name} (${participant.code})` : participant.name;
       participantsLayer.appendChild(dot);
       dotElements[id] = dot;
     }
     const noCodeMode = sessionData.requireCode === false || sessionData.showCodes === false;
-    dot.textContent = noCodeMode ? "" : showFullCode ? participant.code : showInitial ? participant.code[0] : "";
+    dot.textContent = noCodeMode
+      ? ""
+      : showFullCode
+        ? participant.code || ""
+        : showInitial
+          ? (participant.code && participant.code[0]) || ""
+          : "";
     dot.style.width = `${dotSize}px`;
     dot.style.height = `${dotSize}px`;
     dot.style.marginLeft = `${-dotSize / 2}px`;

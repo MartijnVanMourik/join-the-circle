@@ -16,46 +16,45 @@ is bewust geen prioriteit.
 ## Drie schermen
 
 - **`index.html`** — organisator (eigen laptop): sessie aanmaken, een schakelaar
-  **"Docentencode gebruiken"** (uit = deelnemers vullen geen eigen code in; er wordt dan
-  automatisch een code op basis van hun naam gebruikt, puur voor intern gebruik — die code
-  wordt sowieso nooit in de cirkels op het digibord getoond wanneer deze schakelaar uit
-  staat), stellingen + tijdslimiet per stelling bewerken, **teams/secties beheren** (naam +
-  kleur, net als de stellingen, met een standaard 16-secties-set), QR-codes voor deelnemers-
-  en digibordlink, live deelnemerslijst, sessie besturen (volgende stelling, schakelaar "Toon
-  codes op digibord"),
-  en achteraf een overzicht: klik op een deelnemer om zijn/haar antwoorden per stelling te
-  zien, of klik op een **team** om het teamgemiddelde per stelling te zien, plus CSV-export
-  (inclusief teamkolom). Ook een "Eerdere sessies"-overzicht om oude sessies terug te openen.
-  Met **"💾 Configuratie opslaan"** bewaar je de huidige stellingen/teams/middenwoord in
-  `localStorage` van die browser, zodat je het scherm kunt inrichten zonder meteen een sessie
-  aan te maken — bij een volgend bezoek (of na "← Nieuwe sessie") staat je eigen configuratie
-  automatisch weer klaar in plaats van de standaardset. Puur lokaal aan die browser/dat
-  apparaat gekoppeld, net als de auto-rejoin van deelnemers in `join.js`.
+  **"Docentencode gebruiken"** (standaard **uit**) die twee dingen tegelijk instelt: of het
+  docentencode-veld bij aanmelden verplicht is (aan) of optioneel/mag-leeg (uit), én of codes
+  standaard op het digibord getoond worden. Het invoerveld zelf blijft in beide gevallen
+  gewoon zichtbaar voor deelnemers — er verandert alleen of het verplicht is en of het straks
+  te zien is. Verder: stellingen + tijdslimiet per stelling bewerken, **teams/secties beheren**
+  (naam + kleur, net als de stellingen, met een standaard 16-secties-set), QR-codes voor
+  deelnemers- en digibordlink, live deelnemerslijst, sessie besturen (volgende stelling,
+  schakelaar "Toon codes op digibord" — deze live schakelaar wint altijd van de instelling bij
+  aanmaken), en achteraf een overzicht: klik op een deelnemer om zijn/haar antwoorden per
+  stelling te zien, of klik op een **team** om het teamgemiddelde per stelling te zien, plus
+  CSV-export (inclusief teamkolom). Ook een "Eerdere sessies"-overzicht om oude sessies terug
+  te openen. Met **"💾 Configuratie opslaan"** bewaar je de huidige stellingen/teams/middenwoord
+  in `localStorage` van die browser, zodat je het scherm kunt inrichten zonder meteen een
+  sessie aan te maken — bij een volgend bezoek (of na "← Nieuwe sessie") staat je eigen
+  configuratie automatisch weer klaar in plaats van de standaardset. Puur lokaal aan die
+  browser/dat apparaat gekoppeld, net als de auto-rejoin van deelnemers in `join.js`.
 - **`display.html?s=CODE`** — digibord/beamer: een volledige cirkel (geen open stuk meer nodig)
-  met een middencirkel met het instelbare woord, deelnemers als gekleurde bolletjes met hun
-  docentencode. Deelnemers staan **geclusterd per team/sectie** op de boog, elk team in zijn
-  eigen kleur, met een **legenda** rechtsonder in het zijpaneel (kleur ↔ sectienaam) — zo zie je
-  in één oogopslag welke secties dichter naar het midden bewegen. Rechts verder een vast
-  zijpaneel met de huidige stelling, een aftelbalk (springt naar 0 zodra iedereen heeft
-  geantwoord) en, na sluiten, de tellingen — zo blijft de cirkel zelf zo groot mogelijk in
-  plaats van ruimte te delen met een paneel onderin. Open met `&admin=1` erbij om ook de
-  "volgende stelling"-knop rechtstreeks op het digibord te krijgen (handig bij een
-  aanraakscherm, zodat je niet steeds naar je laptop hoeft). De puntgrootte van de
+  met een middencirkel met het instelbare woord, deelnemers als gekleurde bolletjes met
+  (optioneel) hun docentencode. Deelnemers staan **geclusterd per team/sectie** op de boog,
+  elk team in zijn eigen kleur, met een **legenda** rechtsonder in het zijpaneel (kleur ↔
+  sectienaam) — zo zie je in één oogopslag welke secties dichter naar het midden bewegen.
+  Rechts verder een vast zijpaneel met de huidige stelling, een aftelbalk (springt naar 0
+  zodra iedereen heeft geantwoord) en, na sluiten, de tellingen — zo blijft de cirkel zelf zo
+  groot mogelijk in plaats van ruimte te delen met een paneel onderin. Open met `&admin=1`
+  erbij om ook de "volgende stelling"-knop rechtstreeks op het digibord te krijgen (handig bij
+  een aanraakscherm, zodat je niet steeds naar je laptop hoeft). De puntgrootte van de
   deelnemer-bolletjes schaalt automatisch mee met het aantal deelnemers (kleiner bij grote
   groepen) zodat ze bij grote groepen niet over elkaar heen gaan vallen — zie "Belasting/schaal"
-  hieronder. De organisator kan live een schakelaar omzetten om de codes in de bolletjes
-  helemaal te verbergen (`showCodes`) — handig bij zeer grote groepen waar zelfs de
-  auto-verkleinde tekst niet meer prettig leesbaar is; de kleur/positie/clustering blijven dan
-  gewoon zichtbaar. Staat "Docentencode gebruiken" (sessie-instelling) uit, dan tonen de
-  bolletjes sowieso nooit tekst — alleen de teamkleur, ongeacht deze schakelaar.
-- **`join.html?s=CODE`** — deelnemer (telefoon/laptop): sessiecode (voorgevuld via de link/QR),
-  naam, en — als de organisator "Docentencode gebruiken" heeft aangezet (standaard) — **eigen
-  bestaande docentencode** invullen (geen automatisch gegenereerde code — docenten kennen hun
-  eigen code al); staat die instelling uit, dan blijft dat veld verborgen en krijgt de
-  deelnemer een code op basis van zijn/haar naam. Daarna een **sectie/team** kiezen uit een
-  dropdown die verschijnt zodra een geldige (4-tekens) sessiecode is ingetypt (zelfde patroon
-  als de teamkeuze in de kamelenrace), en per stelling Mee eens / Niet mee eens met dezelfde
-  aftelbalk.
+  hieronder. Codes verschijnen nooit in de bolletjes wanneer de organisator "Toon codes op
+  digibord" uitzet, of wanneer "Docentencode gebruiken" bij het aanmaken van de sessie uitstond
+  — in beide gevallen blijft kleur/positie/clustering gewoon zichtbaar.
+- **`join.html?s=CODE`** — deelnemer (telefoon/laptop): sessiecode (voorgevuld via de link/QR
+  en **alleen-lezen** in dat geval, zodat 'm niemand per ongeluk verandert), naam, en een
+  docentencode-veld dat — afhankelijk van "Docentencode gebruiken" bij deze sessie — verplicht
+  is of leeg mag blijven (de hint-tekst past zich hierop aan). Daarna een **sectie/team**
+  kiezen uit een dropdown die verschijnt zodra een geldige (4-tekens) sessiecode is ingetypt
+  (zelfde patroon als de teamkeuze in de kamelenrace), en per stelling Mee eens / Niet mee eens
+  met dezelfde aftelbalk. Het wachtscherm toont "Jouw code op het scherm" alleen als die code
+  daadwerkelijk op het digibord te zien zal zijn.
 
 ## Hoe de positie op het digibord wordt berekend
 
@@ -81,13 +80,15 @@ sessions/{sessionId}
   currentStatementIndex (-1 vóór start), statementOpenedAt (server-timestamp)
   statements: [{ text, durationSec }]
   teams: [{ name, color }]
-  requireCode: boolean (vast per sessie, gekozen bij aanmaken)
-  showCodes: boolean (live aan/uit te zetten tijdens de sessie)
+  requireCode: boolean (vast per sessie, gekozen bij aanmaken — bepaalt of het
+    docentencode-veld bij aanmelden verplicht is, en de initiële waarde van showCodes)
+  showCodes: boolean (live aan/uit te zetten tijdens de sessie, wint altijd van requireCode
+    voor wat er daadwerkelijk op het digibord te zien is)
   createdAt
 
 sessions/{sessionId}/participants/{participantId}
-  name, code (docentencode, of automatisch gegenereerd uit de naam als requireCode false is),
-  teamId (index in teams[]), joinedAt
+  name, code (docentencode; lege string toegestaan als requireCode false is), teamId (index
+  in teams[]), joinedAt
 
 sessions/{sessionId}/responses/{statementIndex}/{participantId}
   value: 0 | 1, ts
@@ -173,7 +174,7 @@ database.rules.json                            — Realtime Database rules (hand
 
 ## Standaard stellingenset
 
-Thema "Digitale geletterdheid", 13 stellingen (20 sec. per stelling) die kennis, huidige
+Thema "AI-geletterd" (standaard middenwoord), 13 stellingen (20 sec. per stelling) die kennis, huidige
 praktijk, vaardigheid, team-/schoolcontext, houding en lef rond AI meten — zie
 `data/statements.json`. Opgesteld en aangescherpt door de werkgroep, met twee dingen bewust
 verwerkt:
@@ -219,8 +220,10 @@ foute 3-tekens-opzoeking en de latere juiste 4-tekens-opzoeking in de verkeerde 
 binnenkomen — de oudere, foute reactie overschreef dan de juiste. Opgelost door pas vanaf
 exact 4 tekens (de vaste lengte van een sessiecode) te zoeken, plus een volgnummer dat een
 verlate/oude reactie altijd negeert. Losse toevoeging: een sessie-brede schakelaar
-"Docentencode gebruiken" (uit = geen invoerveld, automatische naam-code, nooit tekst in de
-digibord-cirkels) is er in dezelfde beurt bij gekomen en getest.
+"Docentencode gebruiken" (bepaalt of het invoerveld verplicht is en of codes standaard op het
+digibord komen — het veld zelf blijft altijd zichtbaar) is er in dezelfde beurt bij gekomen en
+getest, inclusief de "uit"-stand end-to-end: leeg aanmelden geaccepteerd, geen tekst in de
+digibord-cirkels, en het wachtscherm dat "Jouw code op het scherm" dan correct verbergt.
 
 **Teams/secties:** herhaald getest met 100 gesimuleerde deelnemers verdeeld over de 16
 standaardsecties, elk met een eigen "basis-instemming" zodat er echte verschillen tussen

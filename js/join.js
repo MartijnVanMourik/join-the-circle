@@ -13,16 +13,23 @@ const finishedScreen = document.getElementById("finished-screen");
 
 const sessionCodeInput = document.getElementById("session-code-input");
 const nameInput = document.getElementById("name-input");
-const codeField = document.getElementById("code-field");
 const codeInput = document.getElementById("code-input");
 const teamSelect = document.getElementById("team-select");
 const joinError = document.getElementById("join-error");
 const joinBtn = document.getElementById("join-btn");
 
 let sessionRequireCode = true;
+const codeHint = document.getElementById("code-hint");
 
 const waitingName = document.getElementById("waiting-name");
 const waitingCode = document.getElementById("waiting-code");
+const waitingCodeLine = document.getElementById("waiting-code-line");
+
+// Codes staan alleen op het digibord als beide aan staan -- zelfde voorwaarde als
+// noCodeMode in js/display.js, zodat deze regel nooit iets belooft dat niet klopt.
+function codesShownOnDisplay(session) {
+  return session.requireCode !== false && session.showCodes !== false;
+}
 
 const statementProgress = document.getElementById("statement-progress");
 const statementText = document.getElementById("statement-text");
@@ -52,7 +59,10 @@ function showScreen(el) {
 
 const params = new URLSearchParams(location.search);
 const prefillCode = params.get("s");
-if (prefillCode) sessionCodeInput.value = prefillCode.toUpperCase();
+if (prefillCode) {
+  sessionCodeInput.value = prefillCode.toUpperCase();
+  sessionCodeInput.readOnly = true; // via QR/link binnengekomen -- niet per ongeluk aan te passen
+}
 
 sessionCodeInput.addEventListener("input", () => {
   sessionCodeInput.value = sessionCodeInput.value.toUpperCase();
@@ -82,11 +92,6 @@ function populateTeamSelect(teams) {
   });
 }
 
-function applyRequireCodeSetting(requireCode) {
-  sessionRequireCode = requireCode !== false;
-  codeField.classList.toggle("hidden", !sessionRequireCode);
-}
-
 // Sessiecodes zijn altijd exact 4 tekens (zie generateSessionCode in shared.js) -- pas
 // vanaf dan opzoeken voorkomt dat een te-vroege (per definitie onbekende) 3-tekenscheck
 // een net-op-tijd binnengekomen juiste 4-tekenscheck overschrijft.
@@ -103,7 +108,10 @@ async function tryLoadTeams() {
     if (sessionCodeInput.value.trim().toUpperCase() !== code) return; // code intussen gewijzigd
     if (session && session.teams) {
       populateTeamSelect(session.teams);
-      applyRequireCodeSetting(session.requireCode);
+      sessionRequireCode = session.requireCode !== false;
+      codeHint.textContent = sessionRequireCode
+        ? "Gebruik je eigen, bestaande docentencode."
+        : "Gebruik je eigen, bestaande docentencode, of laat leeg.";
     } else {
       teamSelect.innerHTML = '<option value="" disabled selected>Onbekende sessiecode</option>';
     }
@@ -146,6 +154,7 @@ async function tryAutoRejoin() {
 
     waitingName.textContent = stored.name;
     waitingCode.textContent = stored.code;
+    waitingCodeLine.classList.toggle("hidden", !codesShownOnDisplay(session));
 
     showScreen(waitingScreen);
     listenForSessionUpdates();
@@ -161,19 +170,6 @@ async function tryAutoRejoin() {
   const rejoined = await tryAutoRejoin();
   if (!rejoined && prefillCode) tryLoadTeams();
 })();
-
-function generateFallbackCode(name, existingParticipants) {
-  const base = (name.replace(/[^a-zA-Z]/g, "").slice(0, 3) || "XXX").toUpperCase();
-  const takenCodes = new Set(
-    Object.values(existingParticipants).map((p) => (p.code || "").toUpperCase())
-  );
-  if (!takenCodes.has(base)) return base;
-  for (let i = 2; i < 100; i++) {
-    const candidate = `${base}${i}`;
-    if (!takenCodes.has(candidate)) return candidate;
-  }
-  return `${base}${Date.now() % 1000}`;
-}
 
 joinBtn.addEventListener("click", async () => {
   const code = sessionCodeInput.value.trim().toUpperCase();
@@ -217,23 +213,20 @@ joinBtn.addEventListener("click", async () => {
       joinError.classList.remove("hidden");
       return;
     }
+    if (session.requireCode !== false && !teacherCode) {
+      joinError.textContent = "Vul je docentencode in.";
+      joinError.classList.remove("hidden");
+      return;
+    }
 
     const existingParticipants = session.participants || {};
-    const requireCode = session.requireCode !== false;
-
-    let finalCode;
-    if (requireCode) {
-      const codeTaken = Object.values(existingParticipants).some(
-        (p) => (p.code || "").toUpperCase() === teacherCode
-      );
-      if (codeTaken) {
-        joinError.textContent = "Deze docentencode doet al mee in deze sessie — controleer je code.";
-        joinError.classList.remove("hidden");
-        return;
-      }
-      finalCode = teacherCode;
-    } else {
-      finalCode = generateFallbackCode(name, existingParticipants);
+    const codeTaken =
+      teacherCode !== "" &&
+      Object.values(existingParticipants).some((p) => (p.code || "").toUpperCase() === teacherCode);
+    if (codeTaken) {
+      joinError.textContent = "Deze docentencode doet al mee in deze sessie — controleer je code.";
+      joinError.classList.remove("hidden");
+      return;
     }
 
     const teamId = parseInt(teamSelect.value, 10);
@@ -246,7 +239,7 @@ joinBtn.addEventListener("click", async () => {
     await withTimeout(
       newParticipantRef.set({
         name,
-        code: finalCode,
+        code: teacherCode,
         teamId,
         joinedAt: firebase.database.ServerValue.TIMESTAMP,
       })
@@ -254,11 +247,12 @@ joinBtn.addEventListener("click", async () => {
 
     localStorage.setItem(
       "stapindecirkel_deelnemer",
-      JSON.stringify({ sessionId, participantId, name, code: finalCode })
+      JSON.stringify({ sessionId, participantId, name, code: teacherCode })
     );
 
     waitingName.textContent = name;
-    waitingCode.textContent = finalCode;
+    waitingCode.textContent = teacherCode;
+    waitingCodeLine.classList.toggle("hidden", !codesShownOnDisplay(session));
 
     showScreen(waitingScreen);
     listenForSessionUpdates();
@@ -276,6 +270,7 @@ function listenForSessionUpdates() {
     if (!sessionData) return;
 
     if (sessionData.status === "lobby") {
+      waitingCodeLine.classList.toggle("hidden", !codesShownOnDisplay(sessionData));
       showScreen(waitingScreen);
       stopCountdown();
     } else if (sessionData.status === "active") {
