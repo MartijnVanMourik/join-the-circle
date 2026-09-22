@@ -22,7 +22,6 @@ function showScreen(el) {
 
 const sessionNameInput = document.getElementById("session-name-input");
 const centerWordInput = document.getElementById("center-word-input");
-const requireCodeToggle = document.getElementById("require-code-toggle");
 const statementsEditor = document.getElementById("statements-editor");
 const addStatementBtn = document.getElementById("add-statement-btn");
 const resetStatementsBtn = document.getElementById("reset-statements-btn");
@@ -163,7 +162,6 @@ function applySavedOrDefaultConfig() {
   const saved = loadSavedConfig();
   if (saved) {
     centerWordInput.value = saved.centerWord || centerWordInput.value;
-    requireCodeToggle.checked = saved.requireCode !== false;
     statementsEditor.innerHTML = "";
     (saved.statements || []).forEach((s) => addStatementRow(s.text, s.durationSec));
     teamsEditor.innerHTML = "";
@@ -177,7 +175,6 @@ function applySavedOrDefaultConfig() {
 saveConfigBtn.addEventListener("click", () => {
   const config = {
     centerWord: centerWordInput.value.trim() || "AI-geletterd",
-    requireCode: requireCodeToggle.checked,
     statements: readStatementsFromEditor(),
     teams: readTeamsFromEditor(),
   };
@@ -227,8 +224,7 @@ createSessionBtn.addEventListener("click", async () => {
       currentStatementIndex: -1,
       statements,
       teams,
-      requireCode: requireCodeToggle.checked,
-      showCodes: requireCodeToggle.checked,
+      showCodes: true,
       createdAt: firebase.database.ServerValue.TIMESTAMP,
     });
 

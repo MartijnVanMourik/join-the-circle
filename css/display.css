@@ -4,6 +4,7 @@
   --accent: #7c5cff;
   --accent-light: #b9a6ff;
   --ok: #22c55e;
+  --bad: #ef4444;
   --off: #64748b;
   --paper: #f6f5fb;
 }
@@ -142,6 +143,28 @@ html, body {
   font-size: 1.2rem;
   margin: 8px 0;
 }
+
+.tally-agree, .tally-disagree {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tally-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.3em;
+  height: 1.3em;
+  border-radius: 5px;
+  color: white;
+  font-weight: 700;
+  font-size: 0.85em;
+  flex: none;
+}
+
+.tally-icon-agree { background: var(--ok); }
+.tally-icon-disagree { background: var(--bad); }
 
 #panel-next-btn {
   margin-top: 14px;

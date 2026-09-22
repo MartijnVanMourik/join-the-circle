@@ -179,7 +179,7 @@ function renderArena() {
       participantsLayer.appendChild(dot);
       dotElements[id] = dot;
     }
-    const noCodeMode = sessionData.requireCode === false || sessionData.showCodes === false;
+    const noCodeMode = sessionData.showCodes === false;
     dot.textContent = noCodeMode
       ? ""
       : showFullCode

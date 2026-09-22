@@ -18,17 +18,15 @@ const teamSelect = document.getElementById("team-select");
 const joinError = document.getElementById("join-error");
 const joinBtn = document.getElementById("join-btn");
 
-let sessionRequireCode = true;
-const codeHint = document.getElementById("code-hint");
-
 const waitingName = document.getElementById("waiting-name");
 const waitingCode = document.getElementById("waiting-code");
 const waitingCodeLine = document.getElementById("waiting-code-line");
 
-// Codes staan alleen op het digibord als beide aan staan -- zelfde voorwaarde als
-// noCodeMode in js/display.js, zodat deze regel nooit iets belooft dat niet klopt.
+// Zelfde voorwaarde als noCodeMode in js/display.js, zodat deze regel nooit iets
+// belooft dat niet klopt -- "Toon codes op digibord" is live aan te passen door de
+// organisator, dus dit moet altijd de actuele stand weerspiegelen.
 function codesShownOnDisplay(session) {
-  return session.requireCode !== false && session.showCodes !== false;
+  return session.showCodes !== false;
 }
 
 const statementProgress = document.getElementById("statement-progress");
@@ -108,10 +106,6 @@ async function tryLoadTeams() {
     if (sessionCodeInput.value.trim().toUpperCase() !== code) return; // code intussen gewijzigd
     if (session && session.teams) {
       populateTeamSelect(session.teams);
-      sessionRequireCode = session.requireCode !== false;
-      codeHint.textContent = sessionRequireCode
-        ? "Gebruik je eigen, bestaande docentencode."
-        : "Gebruik je eigen, bestaande docentencode, of laat leeg.";
     } else {
       teamSelect.innerHTML = '<option value="" disabled selected>Onbekende sessiecode</option>';
     }
@@ -186,7 +180,7 @@ joinBtn.addEventListener("click", async () => {
     joinError.classList.remove("hidden");
     return;
   }
-  if (sessionRequireCode && !teacherCode) {
+  if (!teacherCode) {
     joinError.textContent = "Vul je docentencode in.";
     joinError.classList.remove("hidden");
     return;
@@ -213,16 +207,10 @@ joinBtn.addEventListener("click", async () => {
       joinError.classList.remove("hidden");
       return;
     }
-    if (session.requireCode !== false && !teacherCode) {
-      joinError.textContent = "Vul je docentencode in.";
-      joinError.classList.remove("hidden");
-      return;
-    }
-
     const existingParticipants = session.participants || {};
-    const codeTaken =
-      teacherCode !== "" &&
-      Object.values(existingParticipants).some((p) => (p.code || "").toUpperCase() === teacherCode);
+    const codeTaken = Object.values(existingParticipants).some(
+      (p) => (p.code || "").toUpperCase() === teacherCode
+    );
     if (codeTaken) {
       joinError.textContent = "Deze docentencode doet al mee in deze sessie — controleer je code.";
       joinError.classList.remove("hidden");

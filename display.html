@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Stap in de cirkel — Digibord</title>
-<link rel="stylesheet" href="css/display.css?v=16">
+<link rel="stylesheet" href="css/display.css?v=18">
 </head>
 <body>
 
@@ -31,8 +31,8 @@
       <h2 id="panel-statement-text"></h2>
       <div class="time-bar"><div id="panel-time-fill" class="time-bar-fill"></div></div>
       <div id="panel-tally" class="hidden">
-        <span class="tally-agree">✅ Mee eens: <strong id="panel-tally-agree"></strong></span>
-        <span class="tally-disagree">⬜ Niet mee eens: <strong id="panel-tally-disagree"></strong></span>
+        <span class="tally-agree"><span class="tally-icon tally-icon-agree">✓</span> Mee eens: <strong id="panel-tally-agree"></strong></span>
+        <span class="tally-disagree"><span class="tally-icon tally-icon-disagree">✕</span> Niet mee eens: <strong id="panel-tally-disagree"></strong></span>
       </div>
       <button id="panel-next-btn" class="hidden" disabled>Volgende stelling →</button>
     </div>
@@ -47,8 +47,8 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
-<script src="js/firebase-config.js?v=16"></script>
-<script src="js/shared.js?v=16"></script>
-<script src="js/display.js?v=16"></script>
+<script src="js/firebase-config.js?v=18"></script>
+<script src="js/shared.js?v=18"></script>
+<script src="js/display.js?v=18"></script>
 </body>
 </html>
