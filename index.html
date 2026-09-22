@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Stap in de cirkel — Organisator</title>
-<link rel="stylesheet" href="css/style.css?v=9">
-<link rel="stylesheet" href="css/admin.css?v=9">
+<link rel="stylesheet" href="css/style.css?v=11">
+<link rel="stylesheet" href="css/admin.css?v=11">
 </head>
 <body>
 
@@ -33,16 +33,16 @@
   <h2>Teams / secties</h2>
   <p class="hint">Docenten kiezen hun sectie bij aanmelden. Elk team krijgt een eigen kleur op het digibord.</p>
   <div id="teams-editor"></div>
-  <div class="row">
+  <div class="row wrap compact-btns">
     <button id="add-team-btn" class="secondary" type="button">+ Team toevoegen</button>
     <button id="reset-teams-btn" class="secondary" type="button">Standaard secties terugzetten</button>
-  </div>
-
-  <div class="row">
     <button id="save-config-btn" class="secondary" type="button">💾 Configuratie opslaan</button>
-    <span id="save-config-msg" class="hint hidden">Opgeslagen in deze browser ✓</span>
   </div>
-  <p class="hint">Bewaart stellingen, teams en het middenwoord in deze browser, zodat je het scherm kunt inrichten zonder een sessie te starten — bij een volgend bezoek staat het klaar.</p>
+  <p class="hint">
+    <span id="save-config-msg" class="hidden">Opgeslagen in deze browser ✓ — </span>Bewaart
+    stellingen, teams en het middenwoord in deze browser, zodat je het scherm kunt inrichten
+    zonder een sessie te starten — bij een volgend bezoek staat het klaar.
+  </p>
 
   <p id="setup-error" class="error hidden"></p>
   <button id="create-session-btn">Sessie aanmaken</button>
@@ -109,8 +109,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-<script src="js/firebase-config.js?v=9"></script>
-<script src="js/shared.js?v=9"></script>
-<script src="js/admin.js?v=9"></script>
+<script src="js/firebase-config.js?v=11"></script>
+<script src="js/shared.js?v=11"></script>
+<script src="js/admin.js?v=11"></script>
 </body>
 </html>
