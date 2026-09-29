@@ -245,6 +245,7 @@ const joinUrlDisplay = document.getElementById("join-url-display");
 const participantCountEl = document.getElementById("participant-count");
 const lobbyParticipants = document.getElementById("lobby-participants");
 const startSessionBtn = document.getElementById("start-session-btn");
+const cancelSessionBtn = document.getElementById("cancel-session-btn");
 const openDisplayBtn = document.getElementById("open-display-btn");
 
 let currentDisplayUrl = null;
@@ -297,6 +298,24 @@ startSessionBtn.addEventListener("click", async () => {
     currentStatementIndex: 0,
     statementOpenedAt: firebase.database.ServerValue.TIMESTAMP,
   });
+});
+
+cancelSessionBtn.addEventListener("click", async () => {
+  const participantCount = countParticipants(sessionData || {});
+  const warning =
+    participantCount > 0
+      ? `Sessie ${sessionId} annuleren? De ${participantCount} aangemelde deelnemer(s) worden ook verwijderd. Dit kan niet ongedaan gemaakt worden.`
+      : `Sessie ${sessionId} annuleren? Dit kan niet ongedaan gemaakt worden.`;
+  if (!confirm(warning)) return;
+
+  await sessionRef.remove();
+  sessionRef.off();
+  sessionId = null;
+  sessionRef = null;
+  sessionData = null;
+  sessionNameInput.value = "";
+  applySavedOrDefaultConfig();
+  showScreen(setupScreen);
 });
 
 // ---------- Control (sessie live) ----------

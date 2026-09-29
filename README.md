@@ -18,8 +18,10 @@ is bewust geen prioriteit.
 - **`index.html`** — organisator (eigen laptop): sessie aanmaken, stellingen + tijdslimiet
   per stelling bewerken, **teams/secties beheren** (naam + kleur, net als de stellingen, met
   een standaard 16-secties-set), QR-codes voor deelnemers- en digibordlink, live
-  deelnemerslijst, sessie besturen (volgende stelling, schakelaar "Toon codes op digibord" —
-  live aan/uit te zetten, ook tijdens de sessie), en achteraf een overzicht: klik op een
+  deelnemerslijst met in de wachtkamer een **"Sessie annuleren"**-knop (met bevestiging,
+  vermeldt het aantal aangemelde deelnemers dat mee verdwijnt — verwijdert de sessie
+  permanent uit Firebase), sessie besturen (volgende stelling, schakelaar "Toon codes op
+  digibord" — live aan/uit te zetten, ook tijdens de sessie), en achteraf een overzicht: klik op een
   deelnemer om zijn/haar antwoorden per stelling te zien, of klik op een **team** om het
   teamgemiddelde per stelling te zien, plus CSV-export (inclusief teamkolom). Ook een "Eerdere
   sessies"-overzicht om oude sessies terug te openen. Met **"💾 Configuratie opslaan"** bewaar

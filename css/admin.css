@@ -22,9 +22,21 @@
 
 #lobby-participants { text-align: center; }
 
-#start-session-btn {
-  display: block;
-  margin-left: auto;
+.lobby-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+button.danger {
+  color: var(--err);
+  border-color: var(--err);
+}
+
+button.danger:hover {
+  background: var(--err);
+  color: white;
 }
 
 .team-row {

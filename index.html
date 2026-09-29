@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Stap in de cirkel — Organisator</title>
-<link rel="stylesheet" href="css/style.css?v=21">
-<link rel="stylesheet" href="css/admin.css?v=21">
+<link rel="stylesheet" href="css/style.css?v=22">
+<link rel="stylesheet" href="css/admin.css?v=22">
 </head>
 <body>
 
@@ -62,7 +62,10 @@
   <h2>Deelnemers (<span id="participant-count">0</span>)</h2>
   <div id="lobby-participants" class="card"></div>
 
-  <button id="start-session-btn">Start sessie →</button>
+  <div class="lobby-actions">
+    <button id="cancel-session-btn" class="secondary danger" type="button">Sessie annuleren</button>
+    <button id="start-session-btn">Start sessie →</button>
+  </div>
 </div>
 
 <div id="control-screen" class="screen hidden">
@@ -110,8 +113,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-<script src="js/firebase-config.js?v=21"></script>
-<script src="js/shared.js?v=21"></script>
-<script src="js/admin.js?v=21"></script>
+<script src="js/firebase-config.js?v=22"></script>
+<script src="js/shared.js?v=22"></script>
+<script src="js/admin.js?v=22"></script>
 </body>
 </html>
