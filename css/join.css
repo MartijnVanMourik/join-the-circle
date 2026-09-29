@@ -3,6 +3,12 @@
   text-align: center;
 }
 
+.optional {
+  font-weight: 400;
+  color: #666;
+  font-size: 0.9em;
+}
+
 #join-btn {
   margin-top: 20px;
 }

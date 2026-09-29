@@ -175,7 +175,7 @@ function renderArena() {
       dot.className = "participant-dot";
       const team = (sessionData.teams || [])[participant.teamId];
       dot.style.background = team ? team.color : FALLBACK_PALETTE[i % FALLBACK_PALETTE.length];
-      dot.title = participant.code ? `${participant.name} (${participant.code})` : participant.name;
+      dot.title = participantLabel(participant);
       participantsLayer.appendChild(dot);
       dotElements[id] = dot;
     }

@@ -50,7 +50,10 @@ is bewust geen prioriteit.
 - **`join.html?s=CODE`** — deelnemer (telefoon/laptop): sessiecode (voorgevuld via de link/QR
   en **alleen-lezen** in dat geval, zodat 'm niemand per ongeluk verandert), naam en **eigen
   bestaande docentencode** invullen (geen automatisch gegenereerde code — docenten kennen hun
-  eigen code al), daarna een **sectie/team** kiezen uit een dropdown die verschijnt zodra een
+  eigen code al). **Naam en docentencode zijn allebei optioneel** (zo aangegeven in het
+  formulier): zonder naam heet iemand overal "Onbekend", zonder code wordt de code in lobby,
+  overzicht en op het digibord gewoon weggelaten (een ingevulde code moet wel uniek zijn
+  binnen de sessie). Daarna een **sectie/team** kiezen (wel verplicht) uit een dropdown die verschijnt zodra een
   geldige (4-tekens) sessiecode is ingetypt (zelfde patroon als de teamkeuze in de
   kamelenrace), en per stelling Mee eens / Niet mee eens met dezelfde aftelbalk. Na het
   antwoorden ziet de deelnemer een persoonlijke terugkoppeling: met hoeveel van de tot nu toe
@@ -122,7 +125,8 @@ geheim — de SDK-key beperkt niets, de rules doen dat).
 geen Auth — iedereen kan naar een sessie schrijven, net als bij de kamelenrace. Er is wel
 lichte vorm-validatie toegevoegd die niets aan de toegang verandert, alleen de vorm van de
 data bewaakt:
-- een `participants`-entry moet een `name` en `code` (strings) bevatten;
+- een `participants`-entry moet een `name` en `code` (strings) bevatten — een lege string
+  mag, zodat beide optioneel zijn zonder dat de rules aangepast hoeven te worden;
 - een `responses`-entry moet een `value` van precies `0` of `1` bevatten.
 
 ## Lokaal testen
@@ -226,8 +230,8 @@ sessie-instelling ("Docentencode gebruiken") die zowel bepaalde of het invoervel
 was als de digibord-weergave overstemde. Bij live gebruik bleek dat laatste een bug: als die
 instelling bij het aanmaken "uit" stond, deed de live schakelaar "Toon codes op digibord"
 niets meer — hij kon nooit meer codes tonen, hoe je 'm ook zette. Opgelost door terug te gaan
-naar de eenvoudigere, oorspronkelijke opzet: docentencode is altijd verplicht bij aanmelden,
-en "Toon codes op digibord" is de enige (en dus altijd betrouwbaar werkende) schakelaar voor
+naar een eenvoudigere opzet zonder sessie-instelling voor de code (inmiddels is de
+docentencode — net als de naam — optioneel bij aanmelden), en "Toon codes op digibord" is de enige (en dus altijd betrouwbaar werkende) schakelaar voor
 de digibord-weergave, in beide richtingen getest tijdens een actieve sessie.
 
 **Teams/secties:** herhaald getest met 100 gesimuleerde deelnemers verdeeld over de 16

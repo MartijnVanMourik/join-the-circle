@@ -287,7 +287,7 @@ function renderLobbyParticipants() {
   list.forEach((p) => {
     const chip = document.createElement("span");
     chip.className = "participant-chip";
-    chip.textContent = `${p.name} (${p.code})`;
+    chip.textContent = participantLabel(p);
     lobbyParticipants.appendChild(chip);
   });
 }
@@ -414,7 +414,7 @@ function renderReview() {
     const team = teams[p.teamId];
     const chip = document.createElement("span");
     chip.className = "participant-chip clickable";
-    chip.innerHTML = `${team ? `<span class="team-chip-dot" style="background:${team.color}"></span>` : ""}${escapeHtml(p.name)} (${escapeHtml(p.code)}) — ${score}/${answered}`;
+    chip.innerHTML = `${team ? `<span class="team-chip-dot" style="background:${team.color}"></span>` : ""}${escapeHtml(participantLabel(p))} — ${score}/${answered}`;
     chip.addEventListener("click", () => renderParticipantDetail(participantId, p));
     reviewParticipants.appendChild(chip);
   });
@@ -426,7 +426,7 @@ function renderParticipantDetail(participantId, participant) {
   const statements = sessionData.statements || [];
   const responses = sessionData.responses || {};
 
-  let html = `<h3>${escapeHtml(participant.name)} (${escapeHtml(participant.code)})</h3><table><tr><th>#</th><th>Stelling</th><th>Antwoord</th></tr>`;
+  let html = `<h3>${escapeHtml(participantLabel(participant))}</h3><table><tr><th>#</th><th>Stelling</th><th>Antwoord</th></tr>`;
   statements.forEach((s, idx) => {
     const r = responses[idx] && responses[idx][participantId];
     const answerText = r ? (r.value === 1 ? "Mee eens" : "Niet mee eens") : "Geen antwoord";
@@ -472,7 +472,7 @@ exportCsvBtn.addEventListener("click", () => {
   Object.entries(participants).forEach(([participantId, p]) => {
     const { score } = computeParticipantScore(sessionData, participantId);
     const team = teams[p.teamId];
-    const row = [p.name, p.code, team ? team.name : ""];
+    const row = [participantName(p), p.code || "", team ? team.name : ""];
     statements.forEach((s, idx) => {
       const r = responses[idx] && responses[idx][participantId];
       row.push(r ? (r.value === 1 ? "Mee eens" : "Niet mee eens") : "");

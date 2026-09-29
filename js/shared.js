@@ -111,6 +111,15 @@ function computeTeamStats(session, teamId) {
   return { memberCount: memberIds.length, perStatement };
 }
 
+// Naam en docentencode zijn optioneel bij aanmelden.
+function participantName(p) {
+  return (p && p.name && p.name.trim()) || "Onbekend";
+}
+
+function participantLabel(p) {
+  return p && p.code ? `${participantName(p)} (${p.code})` : participantName(p);
+}
+
 function escapeHtml(str) {
   const div = document.createElement("div");
   div.textContent = str;

@@ -29,6 +29,18 @@ function codesShownOnDisplay(session) {
   return session.showCodes !== false;
 }
 
+// Naam en docentencode zijn optioneel: zonder code valt er ook niets te tonen.
+function updateWaitingCodeLine(session) {
+  const hasCode = waitingCode.textContent !== "";
+  waitingCodeLine.classList.toggle("hidden", !hasCode || !codesShownOnDisplay(session));
+}
+
+function fillWaitingScreen(name, code, session) {
+  waitingName.textContent = name || "Onbekend";
+  waitingCode.textContent = code || "";
+  updateWaitingCodeLine(session);
+}
+
 const statementProgress = document.getElementById("statement-progress");
 const statementText = document.getElementById("statement-text");
 const timeBarFill = document.getElementById("time-bar-fill");
@@ -177,9 +189,7 @@ async function tryAutoRejoin() {
     participantId = stored.participantId;
     sessionRef = db.ref(`sessions/${sessionId}`);
 
-    waitingName.textContent = stored.name;
-    waitingCode.textContent = stored.code;
-    waitingCodeLine.classList.toggle("hidden", !codesShownOnDisplay(session));
+    fillWaitingScreen(stored.name, stored.code, session);
 
     showScreen(waitingScreen);
     listenForSessionUpdates();
@@ -206,16 +216,6 @@ joinBtn.addEventListener("click", async () => {
     joinError.classList.remove("hidden");
     return;
   }
-  if (!name) {
-    joinError.textContent = "Vul je naam in.";
-    joinError.classList.remove("hidden");
-    return;
-  }
-  if (!teacherCode) {
-    joinError.textContent = "Vul je docentencode in.";
-    joinError.classList.remove("hidden");
-    return;
-  }
   if (!teamSelect.value) {
     joinError.textContent = "Kies eerst je sectie/team.";
     joinError.classList.remove("hidden");
@@ -239,9 +239,9 @@ joinBtn.addEventListener("click", async () => {
       return;
     }
     const existingParticipants = session.participants || {};
-    const codeTaken = Object.values(existingParticipants).some(
-      (p) => (p.code || "").toUpperCase() === teacherCode
-    );
+    const codeTaken =
+      teacherCode !== "" &&
+      Object.values(existingParticipants).some((p) => (p.code || "").toUpperCase() === teacherCode);
     if (codeTaken) {
       joinError.textContent = "Deze docentencode doet al mee in deze sessie — controleer je code.";
       joinError.classList.remove("hidden");
@@ -269,9 +269,7 @@ joinBtn.addEventListener("click", async () => {
       JSON.stringify({ sessionId, participantId, name, code: teacherCode })
     );
 
-    waitingName.textContent = name;
-    waitingCode.textContent = teacherCode;
-    waitingCodeLine.classList.toggle("hidden", !codesShownOnDisplay(session));
+    fillWaitingScreen(name, teacherCode, session);
 
     showScreen(waitingScreen);
     listenForSessionUpdates();
@@ -289,7 +287,7 @@ function listenForSessionUpdates() {
     if (!sessionData) return;
 
     if (sessionData.status === "lobby") {
-      waitingCodeLine.classList.toggle("hidden", !codesShownOnDisplay(sessionData));
+      updateWaitingCodeLine(sessionData);
       showScreen(waitingScreen);
       stopCountdown();
     } else if (sessionData.status === "active") {
