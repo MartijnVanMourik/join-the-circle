@@ -20,7 +20,9 @@ is bewust geen prioriteit.
   een standaard 16-secties-set), QR-codes voor deelnemers- en digibordlink, live
   deelnemerslijst met in de wachtkamer een **"Sessie annuleren"**-knop (met bevestiging,
   vermeldt het aantal aangemelde deelnemers dat mee verdwijnt — verwijdert de sessie
-  permanent uit Firebase), sessie besturen (volgende stelling, schakelaar "Toon codes op
+  permanent uit Firebase), **digibord openen** (knop in de lobby én op het stellingenscherm,
+  plus een "🖥️ Digibord"-link per rij bij de eerdere sessies — zo kan het ook nog als je het
+  in de lobby vergat), sessie besturen (volgende stelling, schakelaar "Toon codes op
   digibord" — live aan/uit te zetten, ook tijdens de sessie), en achteraf een overzicht: klik op een
   deelnemer om zijn/haar antwoorden per stelling te zien, of klik op een **team** om het
   teamgemiddelde per stelling te zien, plus CSV-export (inclusief teamkolom). Ook een "Eerdere

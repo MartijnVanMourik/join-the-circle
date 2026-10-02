@@ -248,17 +248,18 @@ const startSessionBtn = document.getElementById("start-session-btn");
 const cancelSessionBtn = document.getElementById("cancel-session-btn");
 const openDisplayBtn = document.getElementById("open-display-btn");
 
-let currentDisplayUrl = null;
-
 function baseUrl() {
   return location.href.replace(/index\.html.*$/, "").replace(/\/$/, "") + "/";
+}
+
+function displayUrl(code) {
+  return `${baseUrl()}display.html?s=${code}&admin=1`;
 }
 
 function renderLobbyLinks() {
   sessionCodeDisplay.textContent = sessionId;
 
   const joinUrl = `${baseUrl()}join.html?s=${sessionId}`;
-  currentDisplayUrl = `${baseUrl()}display.html?s=${sessionId}&admin=1`;
   joinUrlDisplay.textContent = joinUrl;
 
   document.getElementById("join-qr").innerHTML = "";
@@ -271,9 +272,12 @@ function showLobby() {
   listenToSession();
 }
 
-openDisplayBtn.addEventListener("click", () => {
-  if (currentDisplayUrl) window.open(currentDisplayUrl, "_blank");
-});
+// Dezelfde knop staat ook op het stellingenscherm, voor wie het digibord in de lobby vergat te openen.
+[openDisplayBtn, document.getElementById("control-open-display-btn")].forEach((btn) =>
+  btn.addEventListener("click", () => {
+    if (sessionId) window.open(displayUrl(sessionId), "_blank");
+  })
+);
 
 function renderLobbyParticipants() {
   const participants = (sessionData && sessionData.participants) || {};
@@ -551,6 +555,15 @@ historyBtn.addEventListener("click", async () => {
     const date = s.createdAt ? new Date(s.createdAt).toLocaleString("nl-NL") : "";
     row.innerHTML = `<span>${escapeHtml(s.name || code)} — ${code}</span><span class="hint">${date} · ${s.status}</span>`;
     row.addEventListener("click", () => openSessionFromHistory(code));
+
+    const displayLink = document.createElement("a");
+    displayLink.className = "history-display-link";
+    displayLink.href = displayUrl(code);
+    displayLink.target = "_blank";
+    displayLink.textContent = "🖥️ Digibord";
+    displayLink.title = "Open digibord-weergave (nieuw tabblad)";
+    displayLink.addEventListener("click", (e) => e.stopPropagation()); // niet ook de sessie openen
+    row.appendChild(displayLink);
     historyList.appendChild(row);
   });
 });
